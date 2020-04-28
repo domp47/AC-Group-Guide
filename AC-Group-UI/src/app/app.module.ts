@@ -11,13 +11,21 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
 import { LoginComponent } from './Components/login/login.component';
 import { HomeComponent } from './Components/home/home.component';
 import 'firebase/firestore';
+import { GroupsComponent } from './Components/groups/groups.component';
+import { TrackingComponent } from './Components/tracking/tracking.component';
+import { AdminComponent } from './Components/admin/admin.component';
+import { MenuComponent } from './Components/menu/menu.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    HomeComponent
+    HomeComponent,
+    GroupsComponent,
+    TrackingComponent,
+    AdminComponent,
+    MenuComponent
   ],
   imports: [
     BrowserModule,
