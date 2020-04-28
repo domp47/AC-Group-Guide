@@ -1,10 +1,12 @@
 <mat-toolbar color="primary">
-    <a mat-button [routerLink]="['/home']">Home</a>
-    <a mat-button [routerLink]="['/tracking']">My Items</a>
+    <a *ngIf="isAuthenticated" mat-button [routerLink]="['/home']">Home</a>
+    <a *ngIf="isAuthenticated" mat-button [routerLink]="['/tracking']">My Items</a>
 
     <span class="fill-remaining-space"></span>
 
-    <a mat-button [routerLink]="['/groups']">Groups</a>
-    <a mat-button [routerLink]="['/admin']">Administration</a>
-    <a mat-button (click)="logAuth()">Login/out</a>
+    <a *ngIf="isAuthenticated" mat-button [routerLink]="['/groups']">Groups</a>
+    <a *ngIf="isAuthenticated" mat-button [routerLink]="['/admin']">Administration</a>
+    
+    <a *ngIf="!isAuthenticated" mat-button [routerLink]="['login']">Login</a>
+    <a *ngIf="isAuthenticated" mat-button (click)="logout()">Logout</a>
 </mat-toolbar>

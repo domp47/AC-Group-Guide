@@ -1,8 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
-import { AngularFireAuth } from '@angular/fire/auth';
-import { AngularFirestore } from '@angular/fire/firestore';
-import { auth } from 'firebase';
+import { AuthService } from 'src/app/Services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -11,21 +8,10 @@ import { auth } from 'firebase';
 })
 export class LoginComponent implements OnInit {
 
-  notUsers$: Observable<any[]>;
-  constructor(
-    public auth: AngularFireAuth,
-    public db: AngularFirestore
-  ) {
-    this.notUsers$ = db.collection('notusers').valueChanges();
-  }
+  constructor(private authService: AuthService) {}
 
   login() {
-    this.auth.signInWithPopup(new auth.GoogleAuthProvider());
-    console.log(this.auth);
-  }
-
-  logout() {
-    this.auth.signOut();
+    this.authService.login();
   }
 
   ngOnInit(): void {
