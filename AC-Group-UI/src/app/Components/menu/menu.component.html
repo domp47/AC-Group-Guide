@@ -1,1 +1,10 @@
-<p>menu works!</p>
+<mat-toolbar color="primary">
+    <a mat-button [routerLink]="['/home']">Home</a>
+    <a mat-button [routerLink]="['/tracking']">My Items</a>
+
+    <span class="fill-remaining-space"></span>
+
+    <a mat-button [routerLink]="['/groups']">Groups</a>
+    <a mat-button [routerLink]="['/admin']">Administration</a>
+    <a mat-button (click)="logAuth()">Login/out</a>
+</mat-toolbar>

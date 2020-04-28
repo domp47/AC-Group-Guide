@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { HomeComponent } from './Components/home/home.component';
-import { AngularFireAuthGuard, redirectUnauthorizedTo, canActivate } from '@angular/fire/auth-guard';
+import { redirectUnauthorizedTo, canActivate } from '@angular/fire/auth-guard';
 import { LoginComponent } from './Components/login/login.component';
 import { AdminComponent } from './Components/admin/admin.component';
 import { GroupsComponent } from './Components/groups/groups.component';
