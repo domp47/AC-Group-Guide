@@ -1,18 +1,18 @@
-import { AcUser } from '../models/user.model';
+import { User } from '../models/user.model';
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { auth } from 'firebase/app';
-import { User } from 'firebase';
+import { User as FireUser } from 'firebase';
 import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  user$: Observable<AcUser>;
+  user$: Observable<User>;
   constructor(
     public fireAuth: AngularFireAuth,
     public db: AngularFirestore,
@@ -21,7 +21,7 @@ export class AuthService {
     this.user$ = this.fireAuth.authState.pipe(
       switchMap(user => {
         if (user) {
-          return this.db.doc<AcUser>(`users/${user.uid}`).valueChanges()
+          return this.db.doc<User>(`users/${user.uid}`).valueChanges()
         } else {
           of(null);
         }
@@ -35,8 +35,8 @@ export class AuthService {
     return this.updateUserData(credential.user);
   }
 
-  updateUserData({ uid, email, displayName, photoURL }: User) {
-    const userRef: AngularFirestoreDocument<AcUser> = this.db.doc(`users/${uid}`);
+  updateUserData({ uid, email, displayName, photoURL }: FireUser) {
+    const userRef: AngularFirestoreDocument<User> = this.db.doc(`users/${uid}`);
 
     const data = {
       uid,
@@ -48,8 +48,17 @@ export class AuthService {
     return userRef.set(data, { merge: true })
   }
 
-  logout() {
-    this.fireAuth.signOut();
-    this.router.navigate(['/']);
+  async login() {
+    await this.googleLogin();
+    this.router.navigate(['home']);
+  }
+
+  async logout() {
+    await this.fireAuth.signOut();
+    this.router.navigate(['login']);
+  }
+
+  getUser(): Observable<FireUser> {
+    return this.fireAuth.authState;
   }
 }

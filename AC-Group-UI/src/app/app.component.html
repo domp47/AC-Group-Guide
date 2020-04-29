@@ -1,16 +1,2 @@
-<div *ngIf="auth.user$ | async as user; else showLogin">
-  <h1>Hello {{ user.displayName }}!</h1>
-  <img [src]="user.photoURL">
-  <button (click)="auth.logout()">Logout</button>
-  <div>
-    <ol *ngIf="notUsers$ | async as notUsers">
-      <li *ngFor="let notUser of notUsers">{{ notUser.name }}</li>
-    </ol>
-  </div>
-</div>
-<ng-template #showLogin>
-  <p>Please login.</p>
-  <button (click)="auth.googleLogin()">Login with Google</button>
-</ng-template>
-
+<app-menu></app-menu>
 <router-outlet></router-outlet>
