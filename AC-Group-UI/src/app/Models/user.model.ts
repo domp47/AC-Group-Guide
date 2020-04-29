@@ -1,6 +1,6 @@
-import { Group } from './group.model';
-
 export class User {
-    emailAddress: string;
-    group: Group;
+    uid: string;
+    email: string;
+    photoURL?: string;
+    displayName?: string;
 }

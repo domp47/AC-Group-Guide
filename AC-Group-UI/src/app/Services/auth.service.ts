@@ -1,29 +1,64 @@
+import { User } from '../models/user.model';
+import { Observable, of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { auth } from 'firebase';
-import { Observable } from 'rxjs';
+import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
+import { auth } from 'firebase/app';
+import { User as FireUser } from 'firebase';
 import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-
-  constructor(private auth: AngularFireAuth, private router: Router) { }
-
-  login(){
-    this.auth.signInWithPopup(new auth.GoogleAuthProvider()).then((data: auth.UserCredential) => {
-      this.router.navigate(['home']);  
-    });
+  user$: Observable<User>;
+  constructor(
+    public fireAuth: AngularFireAuth,
+    public db: AngularFirestore,
+    public router: Router
+  ) {
+    this.user$ = this.fireAuth.authState.pipe(
+      switchMap(user => {
+        if (user) {
+          return this.db.doc<User>(`users/${user.uid}`).valueChanges()
+        } else {
+          of(null);
+        }
+      }
+      )
+    )
   }
 
-  logout(){
-    this.auth.signOut().then(() => {
-      this.router.navigate(['login']);
-    });
+  async googleLogin() {
+    const credential = await this.fireAuth.signInWithPopup(new auth.GoogleAuthProvider());
+    return this.updateUserData(credential.user);
   }
 
-  getUser(): Observable<firebase.User>{
-    return this.auth.authState;
+  updateUserData({ uid, email, displayName, photoURL }: FireUser) {
+    const userRef: AngularFirestoreDocument<User> = this.db.doc(`users/${uid}`);
+
+    const data = {
+      uid,
+      email,
+      displayName,
+      photoURL
+    }
+
+    return userRef.set(data, { merge: true })
+  }
+
+  async login() {
+    await this.googleLogin();
+    this.router.navigate(['home']);
+  }
+
+  async logout() {
+    await this.fireAuth.signOut();
+    this.router.navigate(['login']);
+  }
+
+  getUser(): Observable<FireUser> {
+    return this.fireAuth.authState;
   }
 }
