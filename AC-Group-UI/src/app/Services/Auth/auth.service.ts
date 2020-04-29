@@ -1,4 +1,4 @@
-import { AcUser } from './../models/user.model';
+import { AcUser } from '../../models/user.model';
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
