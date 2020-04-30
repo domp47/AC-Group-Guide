@@ -1,6 +1,7 @@
+import { Group } from './../Models/group.model';
 import { User } from '../Models/user.model';
 import { Observable, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
@@ -13,6 +14,8 @@ import { Router } from '@angular/router';
 })
 export class AuthService {
   user$: Observable<User>;
+  group$: Observable<Group>;
+  groupDocPath: string;
   constructor(
     public fireAuth: AngularFireAuth,
     public db: AngularFirestore,
@@ -27,7 +30,17 @@ export class AuthService {
         }
       }
       )
-    )
+    ).pipe(map(value => {
+      console.log(value);
+      return value;
+    }))
+    this.group$ = this.user$.pipe(switchMap(user => {
+      if (user && user.groupRef) {
+        return this.db.doc<Group>(user.groupRef.path).valueChanges();
+      } else {
+        of(null);
+      }
+    }))
   }
 
   async googleLogin() {
@@ -43,7 +56,7 @@ export class AuthService {
       email,
       displayName,
       photoURL
-    }
+    } as User;
 
     return userRef.set(data, { merge: true })
   }

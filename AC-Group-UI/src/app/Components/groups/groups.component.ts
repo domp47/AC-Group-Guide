@@ -1,3 +1,5 @@
+import { GroupService } from './../../Services/Group/group.service';
+import { AuthService } from './../../Services/auth.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -7,7 +9,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class GroupsComponent implements OnInit {
 
-  constructor() { }
+  constructor(public groupService: GroupService, public authService: AuthService) { }
 
   ngOnInit(): void {
   }
