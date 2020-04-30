@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { faCircle } from '@fortawesome/free-regular-svg-icons'
+import { faCircle, faDotCircle } from '@fortawesome/free-regular-svg-icons'
+import { faBook, faDollarSign, faUser } from '@fortawesome/free-solid-svg-icons'
 import { Art } from 'src/app/Models/art.model';
 
 @Component({
@@ -10,13 +11,17 @@ import { Art } from 'src/app/Models/art.model';
 export class ArtCardComponent implements OnInit {
 
   faCircle = faCircle;
+  faDotCircle = faDotCircle;
+  faBook = faBook;
+  faDollarSign = faDollarSign;
+  faUser = faUser;
 
   @Input() item: Art;
 
-  constructor() { }
-
+  constructor() { 
+  }
+  
   ngOnInit(): void {
-    this.item.imgLocation = "./assets/" + this.item.imgLocation;
   }
 
 }

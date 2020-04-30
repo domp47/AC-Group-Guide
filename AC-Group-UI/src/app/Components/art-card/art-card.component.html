@@ -7,15 +7,14 @@
     </mat-card-header>
 
     <div class="center">
-        <a [href]="item.imgLocation" target="_blank">
-            <img [width]="item.width" [src]="item.imgLocation">
+        <a [href]="'assets/' + item.imgLocation" target="_blank">
+            <img [width]="item.width" [src]="'assets/' + item.imgLocation">
         </a>
     </div>
 
     <mat-card-content>
-        <p>{{item.original}} <i>by</i> {{item.artist}}</p>
+        <p><fa-icon [icon]="faBook"></fa-icon> &nbsp; {{item.original}}</p>
+        <p><fa-icon [icon]="faUser"></fa-icon> &nbsp; {{item.artist}}</p>
+        <p><fa-icon [icon]="faDollarSign"></fa-icon> &nbsp; {{item.price}}</p>
     </mat-card-content>
-    <mat-card-footer>
-        {{item.price}}
-    </mat-card-footer>
 </mat-card>

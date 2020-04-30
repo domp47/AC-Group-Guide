@@ -1,16 +1,16 @@
-<div class="center">
-    <mat-button-toggle-group>
-        <mat-button-toggle mat-raised-button [value]="0" (change)="filterChange($event.value)">Art</mat-button-toggle>
-        <mat-button-toggle mat-raised-button [value]="1" (change)="filterChange($event.value)">Bugs</mat-button-toggle>
-        <mat-button-toggle mat-raised-button [value]="2" (change)="filterChange($event.value)">Fish</mat-button-toggle>
-        <mat-button-toggle mat-raised-button [value]="3" (change)="filterChange($event.value)">Fossils</mat-button-toggle>
+<div class="center mt-3">
+    <mat-button-toggle-group [value]="filter" (change)="filterChange($event)">
+        <mat-button-toggle mat-raised-button [value]="0">Art</mat-button-toggle>
+        <mat-button-toggle mat-raised-button [value]="1">Bugs</mat-button-toggle>
+        <mat-button-toggle mat-raised-button [value]="2">Fish</mat-button-toggle>
+        <mat-button-toggle mat-raised-button [value]="3">Fossils</mat-button-toggle>
     </mat-button-toggle-group>
 </div>
 
-<!-- <div [ngSwitch]="filter"> -->
-    <!-- <div *ngSwitchCase="1"> -->
-        <mat-grid-list *ngFor="let art of artData" [cols]="nCols" rowHeight="2:0.5" (window:resize)="onResize($event)">
-              <app-art-card [item]="art"></app-art-card>
-       </mat-grid-list>
-    <!-- </div> -->
-<!-- </div> -->
+<div class="mt-4">
+    <mat-grid-list *ngIf="filter == 0" [cols]="nCols" gutterSize="1.5rem" rowHeight="310px" (window:resize)="onResize($event)">
+        <mat-grid-tile *ngFor="let art of artData">
+            <app-art-card style="height: 100%;" [item]="art"></app-art-card>
+        </mat-grid-tile>  
+    </mat-grid-list>
+</div>
