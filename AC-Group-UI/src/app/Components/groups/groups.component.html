@@ -1,1 +1,5 @@
 <p>groups works!</p>
+<div *ngIf="authService.group$ | async as group">
+  Join code: {{ group.joinCode }}
+</div>
+<button mat-button (click)="groupService.createGroup()">Create Group</button>

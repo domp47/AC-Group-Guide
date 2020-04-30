@@ -1,1 +1,4 @@
 <p>tracking works!</p>
+<div *ngIf="authService.user$ | async as user">
+  Name: {{ user.displayName }}
+</div>
