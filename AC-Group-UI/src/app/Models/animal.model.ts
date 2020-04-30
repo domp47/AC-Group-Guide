@@ -1,7 +1,9 @@
 import { Collectable } from './collectable.model';
 
 export class Animal extends Collectable {
-    spawnLocation: string;
-    activeMonths: number;
-    activeHours: number;
+    location: string;
+    northMonths: number;
+    southMonths: number;
+    timeLabel: string;
+    timeMask: number;
 }

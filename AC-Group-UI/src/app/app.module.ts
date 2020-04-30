@@ -57,6 +57,13 @@ import {MatTabsModule} from '@angular/material/tabs';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatTreeModule} from '@angular/material/tree';
+import { FishCardComponent } from './Components/fish-card/fish-card.component';
+import { ArtCardComponent } from './Components/art-card/art-card.component';
+import { BugCardComponent } from './Components/bug-card/bug-card.component';
+import { FossilCardComponent } from './Components/fossil-card/fossil-card.component';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   exports: [
@@ -69,7 +76,11 @@ import {MatTreeModule} from '@angular/material/tree';
     GroupsComponent,
     TrackingComponent,
     AdminComponent,
-    MenuComponent
+    MenuComponent,
+    FishCardComponent,
+    ArtCardComponent,
+    BugCardComponent,
+    FossilCardComponent
   ],
   imports: [
     BrowserModule,
@@ -81,6 +92,10 @@ import {MatTreeModule} from '@angular/material/tree';
     AngularFirestoreModule,
     AngularFireAuthModule,
     AngularFireFunctionsModule,
+    BrowserAnimationsModule,
+    CommonModule,
+    FormsModule,
+    FontAwesomeModule,
 
     //Material Modules
     MatAutocompleteModule,

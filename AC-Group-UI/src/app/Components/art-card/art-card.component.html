@@ -1,0 +1,17 @@
+<mat-card>
+    <mat-card-header>
+        <div mat-card-avatar>
+            <fa-icon [icon]="faCircle"></fa-icon>
+        </div>
+        <mat-card-title>{{item.name}}</mat-card-title>
+    </mat-card-header>
+
+    <img mat-card-iamge [src]="item.imgLocation">
+
+    <mat-card-content>
+        <p>{{item.original}} <i>by</i> {{item.artist}}</p>
+    </mat-card-content>
+    <mat-card-footer>
+        {{item.price}}
+    </mat-card-footer>
+</mat-card>

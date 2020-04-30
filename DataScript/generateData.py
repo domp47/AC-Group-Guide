@@ -245,18 +245,24 @@ print("Parsed Fossils")
 
 ### Art ###
 class Art:
-    def __init__(self, data):
+    def __init__(self, data, isPainting):
         self.name = data[0][0]
-        self.imgLocation = os.path.join(fossilPath, f"{self.name}.png")
+        self.imgLocation = os.path.join(artPath, f"{self.name}.png")
         self.originalPiece = data[1]
         self.artist = data[2]
         self.price = data[3]
         self.value = data[4]
 
-        downloadImage(data[0][1], os.path.join(basePath, "Results", artPath, f"{self.name}.png"))
+        imgName = self.name
+        if isPainting:
+            imgName += ".jpg"
+        else:
+            imgName += ".png"
+
+        downloadImage(data[0][1], os.path.join(basePath, "Results", artPath, imgName))
 
 def parseArtTable(table):
-    table_body = artTable.find('tbody')
+    table_body = table.find('tbody')
     rows = table_body.find_all('tr')
 
     data = []
@@ -268,7 +274,12 @@ def parseArtTable(table):
         #This is sketchy but might just work
         imgSrc = cols[0].find("img")["src"]
         if "thumb" in imgSrc:
-            imgSrc = imgSrc[:imgSrc.find("/80px")]
+            indx = imgSrc.find("/80px")
+            if indx == -1:
+                indx = imgSrc.find("/60px")
+            if indx == -1:
+                raise Exception(f"Don't recognize img src format '{imgSrc}'")
+            imgSrc = imgSrc[:indx]
             imgSrc = imgSrc.replace("thumb/", "")
         imgLink = f"https://nookipedia.com/{imgSrc}"
 
@@ -293,10 +304,10 @@ sculpData = parseArtTable(sculptureTable)
 print("Retrived Art")
 
 for art in artData:
-    artList.append(Art(art))
+    artList.append(Art(art, True))
 
 for sculp in sculpData:
-    artList.append(sculp)
+    artList.append(Art(sculp, False))
 
 print("Parsed Art")
 
