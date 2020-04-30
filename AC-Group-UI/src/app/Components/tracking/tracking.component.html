@@ -9,10 +9,8 @@
 
 <!-- <div [ngSwitch]="filter"> -->
     <!-- <div *ngSwitchCase="1"> -->
-        <div fxLayout="row" fxFlex.md="70" fxLayoutWrap class="card-deck-container mat-elevation-z4">
-            <div fxFlex *ngFor="let art of artData" class="card-item">
-              <app-art-card [ngStyle]="{'width':'300' + 'px'}" [item]="art"></app-art-card>
-            </div>
-       </div>      
+        <mat-grid-list *ngFor="let art of artData" [cols]="nCols" rowHeight="2:0.5" (window:resize)="onResize($event)">
+              <app-art-card [item]="art"></app-art-card>
+       </mat-grid-list>
     <!-- </div> -->
 <!-- </div> -->
