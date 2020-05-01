@@ -25,15 +25,21 @@ export class TrackingComponent implements OnInit {
   filter = 0;
   nCols: number;
 
-  artData = [];
-  fossilData = [];
+  artCollected = [];
+  artMissing = []
+
+  fossilCollected = [];
+  fossilMissing = [];
 
   bugsAvail = [];
   bugsAvailThisMonth = [];
   bugsNotAvail = [];
   bugsCaught = [];
 
-  fishData = [];
+  fishAvail = [];
+  fishAvailThisMonth = [];
+  fishNotAvail = [];
+  fishCaught = [];
 
   hemisphere: boolean = true;
 
@@ -60,7 +66,16 @@ export class TrackingComponent implements OnInit {
       let hBit = 1 << (23-new Date().getHours()-1);
   
       this.db.collection<Art>('art').valueChanges().subscribe((data: Art[]) => {
-        this.artData = data;
+        this.artCollected = []
+        this.artMissing = [];
+
+        for(let art of data){
+          if(itemsCaught.indexOf(art.name) == -1){
+            this.artMissing.push(art);
+          }else{
+            this.artCollected.push(art);
+          }
+        }
       });
       this.db.collection<Bug>('bugs').valueChanges().subscribe((data: Bug[]) => {
         this.bugsAvail = [];
@@ -85,10 +100,38 @@ export class TrackingComponent implements OnInit {
         }
       });
       this.db.collection<Fish>('fish').valueChanges().subscribe((data: Fish[]) => {
-        this.fishData = data;
+        this.fishAvail = [];
+        this.fishAvailThisMonth = [];
+        this.fishNotAvail = [];
+        this.fishCaught = [];
+  
+        for(let fish of data){
+          if(itemsCaught.indexOf(fish.name) == -1){
+            if((this.hemisphere && (fish.northMonths & mBit) != 0) || (!this.hemisphere && (fish.southMonths & mBit) != 0)){
+              if((fish.timeMask & hBit) != 0){
+                this.fishAvail.push(fish);
+              }else{
+                this.fishAvailThisMonth.push(fish);
+              }
+            }else{
+              this.fishNotAvail.push(fish);
+            }
+          }else{
+            this.fishCaught.push(fish);
+          }
+        }
       });
       this.db.collection<Fossil>('fossils').valueChanges().subscribe((data: Fossil[]) => {
-        this.fossilData = data;
+        this.fossilCollected = []
+        this.fossilMissing = [];
+
+        for(let fossil of data){
+          if(itemsCaught.indexOf(fossil.name) == -1){
+            this.fossilMissing.push(fossil);
+          }else{
+            this.fossilCollected.push(fossil);
+          }
+        }
       });
     });
 

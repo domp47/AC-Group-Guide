@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { faCircle, faDotCircle } from '@fortawesome/free-regular-svg-icons';
 import { faDollarSign } from '@fortawesome/free-solid-svg-icons';
 import { Fossil } from 'src/app/Models/fossil.model';
@@ -15,10 +15,18 @@ export class FossilCardComponent implements OnInit {
   faDollarSign = faDollarSign;
 
   @Input() item: Fossil;
+  @Input() caught: boolean;
 
+  @Output() clicked: EventEmitter<any> = new EventEmitter();
   constructor() { }
 
   ngOnInit(): void {
+  }
+
+  itemClicked(){
+    let name = this.item.name;
+    let add = !this.caught;
+    this.clicked.emit({name, add});
   }
 
 }

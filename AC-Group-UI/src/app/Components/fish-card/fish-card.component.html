@@ -1,7 +1,8 @@
 <mat-card class="myCard">
     <mat-card-header>
-        <div mat-card-avatar>
-            <fa-icon [icon]="faCircle"></fa-icon>
+        <div (click)="itemClicked()" class="pointer" mat-card-avatar>
+            <fa-icon *ngIf="!caught" [icon]="faCircle"></fa-icon>
+            <fa-icon *ngIf="caught" [icon]="faDotCircle"></fa-icon>
         </div>
         <mat-card-title>{{item.name}}</mat-card-title>
     </mat-card-header>
