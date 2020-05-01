@@ -4,4 +4,5 @@ export class Art extends Collectable{
     original: string;
     artist: string;
     width: number;
+    isPainting: boolean;
 }

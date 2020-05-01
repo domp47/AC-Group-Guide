@@ -247,17 +247,21 @@ print("Parsed Fossils")
 class Art:
     def __init__(self, data, isPainting):
         self.name = data[0][0]
-        self.imgLocation = os.path.join(artPath, f"{self.name}.png")
+        self.imgLocation = os.path.join(artPath, self.name)
         self.originalPiece = data[1]
         self.artist = data[2]
         self.price = data[3]
         self.value = data[4]
+        self.isPainting = isPainting
+        self.width = data[0][2]
 
         imgName = self.name
         if isPainting:
             imgName += ".jpg"
+            self.imgLocation += ".jpg"
         else:
             imgName += ".png"
+            self.imgLocation += ".png"
 
         downloadImage(data[0][1], os.path.join(basePath, "Results", artPath, imgName))
 
@@ -273,9 +277,12 @@ def parseArtTable(table):
 
         #This is sketchy but might just work
         imgSrc = cols[0].find("img")["src"]
+        width = 0
         if "thumb" in imgSrc:
             indx = imgSrc.find("/80px")
+            width = 100
             if indx == -1:
+                width = 80
                 indx = imgSrc.find("/60px")
             if indx == -1:
                 raise Exception(f"Don't recognize img src format '{imgSrc}'")
@@ -284,7 +291,7 @@ def parseArtTable(table):
         imgLink = f"https://nookipedia.com/{imgSrc}"
 
         cols = [ele.text.strip() for ele in cols]
-        cols[0] = (cols[0], imgLink)
+        cols[0] = (cols[0], imgLink, width)
         data.append(cols)
 
     return data

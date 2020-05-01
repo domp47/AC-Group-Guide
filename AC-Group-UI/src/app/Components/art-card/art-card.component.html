@@ -8,13 +8,14 @@
 
     <div class="center">
         <a [href]="'assets/' + item.imgLocation" target="_blank">
-            <img [width]="item.width" [src]="'assets/' + item.imgLocation">
+            <img *ngIf="item.isPainting" [width]="item.width" [src]="'assets/' + item.imgLocation">
+            <img *ngIf="!item.isPainting" [src]="'assets/' + item.imgLocation">
         </a>
     </div>
 
     <mat-card-content>
         <p><fa-icon [icon]="faBook"></fa-icon> &nbsp; {{item.original}}</p>
         <p><fa-icon [icon]="faUser"></fa-icon> &nbsp; {{item.artist}}</p>
-        <p><fa-icon [icon]="faDollarSign"></fa-icon> &nbsp; {{item.price}}</p>
+        <p><fa-icon [icon]="faDollarSign"></fa-icon> &nbsp; {{item.price | number}}</p>
     </mat-card-content>
 </mat-card>

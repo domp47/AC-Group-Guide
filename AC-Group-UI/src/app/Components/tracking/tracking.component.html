@@ -8,9 +8,27 @@
 </div>
 
 <div class="mt-4">
-    <mat-grid-list *ngIf="filter == 0" [cols]="nCols" gutterSize="1.5rem" rowHeight="310px" (window:resize)="onResize($event)">
+    <mat-grid-list *ngIf="filter == 0" [cols]="nCols" gutterSize="1.5rem" rowHeight="350px" (window:resize)="onResize($event)">
         <mat-grid-tile *ngFor="let art of artData">
-            <app-art-card style="height: 100%;" [item]="art"></app-art-card>
+            <app-art-card class="app-card" [item]="art"></app-art-card>
+        </mat-grid-tile>  
+    </mat-grid-list>
+
+    <mat-grid-list *ngIf="filter == 1" [cols]="nCols" gutterSize="1.5rem" rowHeight="350px" (window:resize)="onResize($event)">
+        <mat-grid-tile *ngFor="let bug of bugData">
+            <app-bug-card class="app-card" [item]="bug"></app-bug-card>
+        </mat-grid-tile>  
+    </mat-grid-list>
+
+    <mat-grid-list *ngIf="filter == 2" [cols]="nCols" gutterSize="1.5rem" rowHeight="350px" (window:resize)="onResize($event)">
+        <mat-grid-tile *ngFor="let fish of fishData">
+            <app-fish-card class="app-card" [item]="fish"></app-fish-card>
+        </mat-grid-tile>  
+    </mat-grid-list>
+
+    <mat-grid-list *ngIf="filter == 3" [cols]="nCols" gutterSize="1.5rem" rowHeight="250px" (window:resize)="onResize($event)">
+        <mat-grid-tile *ngFor="let fossil of fossilData">
+            <app-fossil-card class="app-card" [item]="fossil"></app-fossil-card>
         </mat-grid-tile>  
     </mat-grid-list>
 </div>

@@ -32,7 +32,9 @@ for art in jsonData['Art']:
         "imgLocation": art["imgLocation"],
         "original": art["originalPiece"],
         "artist": art["artist"],
-        "price": price
+        "price": price,
+        "isPainting": art["isPainting"],
+        "width": art["width"]
     })
 
 for bug in jsonData['Bugs']:
@@ -76,7 +78,7 @@ for fossil in jsonData['Fossils']:
     doc = db.collection('fossils').document(fossil['name'])
 
     try:
-        price = int(fossil["price"])
+        price = int(fossil["price"].replace(',',''))
     except:
         price = 0
 
