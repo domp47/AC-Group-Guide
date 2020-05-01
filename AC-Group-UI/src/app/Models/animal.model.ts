@@ -1,7 +1,11 @@
 import { Collectable } from './collectable.model';
 
 export class Animal extends Collectable {
-    spawnLocation: string;
-    activeMonths: number;
-    activeHours: number;
+    location: string;
+    // monthNorthLabel: string; TODO: Need to generate these from seed data
+    // monthSouthLabel: string; TODO
+    northMonths: number;
+    southMonths: number;
+    timeLabel: string;
+    timeMask: number;
 }
