@@ -16,7 +16,7 @@
         <p><fa-icon [icon]="faMapMarked"></fa-icon> &nbsp; {{item.location}}</p>
         <p><fa-icon [icon]="faRulerCombined"></fa-icon> &nbsp; {{item.shadowSize}}</p>
         <p><fa-icon [icon]="faClock"></fa-icon> &nbsp; {{item.timeLabel}}</p>
-        <p><fa-icon [icon]="faCalendar"></fa-icon> &nbsp; TODO</p>
+        <p><fa-icon [icon]="faCalendar"></fa-icon> &nbsp; {{hemisphere ? item.northMonthLabel : item.southMonthLabel}}</p>
         <p><fa-icon [icon]="faDollarSign"></fa-icon> &nbsp; {{item.price | number}}</p>
     </mat-card-content>
 </mat-card>

@@ -19,6 +19,7 @@ export class FishCardComponent implements OnInit {
   faRulerCombined = faRulerCombined;
 
   @Input() item: Fish;
+  @Input() hemisphere: boolean;
 
   constructor() { }
 

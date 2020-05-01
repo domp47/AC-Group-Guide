@@ -14,15 +14,39 @@
         </mat-grid-tile>  
     </mat-grid-list>
 
-    <mat-grid-list *ngIf="filter == 1" [cols]="nCols" gutterSize="1.5rem" rowHeight="350px" (window:resize)="onResize($event)">
-        <mat-grid-tile *ngFor="let bug of bugData">
-            <app-bug-card class="app-card" [item]="bug"></app-bug-card>
-        </mat-grid-tile>  
-    </mat-grid-list>
+    <div *ngIf="filter == 1">
+        <h1>Available To Catch</h1>
+        <mat-grid-list  [cols]="nCols" gutterSize="1.5rem" rowHeight="350px" (window:resize)="onResize($event)">
+            <mat-grid-tile *ngFor="let bug of bugsAvail">
+                <app-bug-card class="app-card" [item]="bug" [hemisphere]="hemisphere" (clicked)="catchItem($event)" [caught]="false"></app-bug-card>
+            </mat-grid-tile>  
+        </mat-grid-list>
+
+        <h1>Available This Month</h1>
+        <mat-grid-list  [cols]="nCols" gutterSize="1.5rem" rowHeight="350px" (window:resize)="onResize($event)">
+            <mat-grid-tile *ngFor="let bug of bugsAvailThisMonth">
+                <app-bug-card class="app-card" [item]="bug" [hemisphere]="hemisphere" (clicked)="catchItem($event)" [caught]="false"></app-bug-card>
+            </mat-grid-tile>  
+        </mat-grid-list>
+
+        <h1>Not Available</h1>
+        <mat-grid-list  [cols]="nCols" gutterSize="1.5rem" rowHeight="350px" (window:resize)="onResize($event)">
+            <mat-grid-tile *ngFor="let bug of bugsNotAvail">
+                <app-bug-card class="app-card" [item]="bug" [hemisphere]="hemisphere" (clicked)="catchItem($event)" [caught]="false"></app-bug-card>
+            </mat-grid-tile>
+        </mat-grid-list>
+
+        <h1>Already Caught</h1>
+        <mat-grid-list  [cols]="nCols" gutterSize="1.5rem" rowHeight="350px" (window:resize)="onResize($event)">
+            <mat-grid-tile *ngFor="let bug of bugsCaught">
+                <app-bug-card class="app-card" [item]="bug" [hemisphere]="hemisphere" (clicked)="catchItem($event)" [caught]="true"></app-bug-card>
+            </mat-grid-tile>
+        </mat-grid-list>
+    </div>
 
     <mat-grid-list *ngIf="filter == 2" [cols]="nCols" gutterSize="1.5rem" rowHeight="350px" (window:resize)="onResize($event)">
         <mat-grid-tile *ngFor="let fish of fishData">
-            <app-fish-card class="app-card" [item]="fish"></app-fish-card>
+            <app-fish-card class="app-card" [item]="fish" [hemisphere]="hemisphere"></app-fish-card>
         </mat-grid-tile>  
     </mat-grid-list>
 
