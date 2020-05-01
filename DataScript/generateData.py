@@ -10,10 +10,8 @@ import json
 
 # Links
 artLink    = "https://nookipedia.com/wiki/Art"
-bugNorthLink  = "https://animalcrossing.fandom.com/wiki/Bugs_(New_Horizons)#Northern%20Hemisphere"
-bugSouthLink  = "https://animalcrossing.fandom.com/wiki/Bugs_(New_Horizons)#Southern%20Hemisphere"
-fishNorthLink = "https://animalcrossing.fandom.com/wiki/Fish_(New_Horizons)#Northern%20Hemisphere"
-fishSouthLink = "https://animalcrossing.fandom.com/wiki/Fish_(New_Horizons)#Southern%20Hemisphere"
+bugLink  = "https://animalcrossing.fandom.com/wiki/Bugs_(New_Horizons)"
+fishLink = "https://animalcrossing.fandom.com/wiki/Fish_(New_Horizons)"
 fossilLink    = "https://animalcrossing.fandom.com/wiki/Fossils_(New_Horizons)"
 
 
@@ -111,6 +109,26 @@ def getFandomList(link):
     
     return data
 
+def getFandomSouthList(link):
+    r = requests.get(link)
+    parser = BS(r.text, "html.parser")
+
+    table = parser.find("div", {"title": "Southern Hemisphere"}).find("table", class_="sortable")
+
+    rows = table.find_all("tr")
+    data = []
+    for row in rows:
+        cols = row.find_all('td')
+        if not cols:
+            continue #First tr is a header
+
+        imgLink = cols[1].find("img")["data-src"]
+        cols = [ele.text.strip() for ele in cols]
+        cols[1] = imgLink[:imgLink.find('/revision')]
+        data.append(cols)
+    
+    return data
+
 def getNookpediaList(link):
     r = requests.get(link)
     parser = BS(r.text, "html.parser")
@@ -137,6 +155,55 @@ def getNookpediaList(link):
     
     return data
 
+def getMonthRanges(mask, monthToStart):
+    ranges = []
+    active = False
+    curStart = -1
+    for i in range(0, 12):
+        month = (monthToStart + i) % 12
+
+        prevMonth = (monthToStart + i - 1)
+        if prevMonth < 0:
+            prevMonth += 12
+
+        bit = 1 << (11 - month)
+        
+        # This month is off but prev month was on so end the current streak
+        if not mask & bit and active:
+            ranges.append((curStart, prevMonth))
+            active = False
+        # This month is on but previous month was off so start a streak
+        elif mask & bit and not active:
+            curStart = month
+            active = True
+
+    if active:
+        prevMonth = (monthToStart - 1)
+        if prevMonth < 0:
+            prevMonth += 12
+        ranges.append((curStart, prevMonth))
+
+    return ranges
+def getMonthStr(mask):
+    monthMap = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"]
+    for i in range(0, 12):
+        bit = 1 << (11 - i)
+
+        #This bit isn't set so start searching here
+        if not mask & bit:
+            ranges = getMonthRanges(mask, i)
+
+            monthStr = ""
+            for start, end in ranges:
+                if start == end:
+                    monthStr += f"& {monthMap[start]} "
+                else:
+                    monthStr += f"& {monthMap[start]} - {monthMap[end]} "
+
+            return monthStr[1:].strip()
+
+    return "All year"
+
 
 ### Fish ###
 class Fish:
@@ -150,12 +217,14 @@ class Fish:
         self.timeMask = createTimeBitMask(northData[5].split('&'))
         self.northMonths = createMonthBitMask(northData[6:])
         self.southMonths = createMonthBitMask(southData[6:])
+        self.northMonthLabel = getMonthStr(self.northMonths)
+        self.southMonthLabel = getMonthStr(self.southMonths)
 
         downloadImage(northData[1], os.path.join(basePath, "Results", fishPath, f"{self.name}.png"))
 
 
-northFish = getFandomList(fishNorthLink)
-southFish = getFandomList(fishSouthLink)
+northFish = getFandomList(fishLink)
+southFish = getFandomSouthList(fishLink)
 
 fishList = []
 
@@ -178,11 +247,13 @@ class Bug:
         self.timeMask = createTimeBitMask(northData[4].split('&'))
         self.northMonths = createMonthBitMask(northData[5:])
         self.southMonths = createMonthBitMask(southData[5:])
+        self.northMonthLabel = getMonthStr(self.northMonths)
+        self.southMonthLabel = getMonthStr(self.southMonths)
 
         downloadImage(northData[1], os.path.join(basePath, "Results", bugPath, f"{self.name}.png"))
 
-northBugs = getFandomList(bugNorthLink)
-southbugs = getFandomList(bugSouthLink)
+northBugs = getFandomList(bugLink)
+southbugs = getFandomSouthList(bugLink)
 
 bugList = []
 

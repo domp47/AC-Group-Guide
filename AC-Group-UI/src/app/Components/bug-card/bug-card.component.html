@@ -1,7 +1,8 @@
 <mat-card class="myCard">
     <mat-card-header>
-        <div mat-card-avatar>
-            <fa-icon [icon]="faCircle"></fa-icon>
+        <div (click)="itemClicked()" class="pointer" mat-card-avatar>
+            <fa-icon *ngIf="!caught" [icon]="faCircle"></fa-icon>
+            <fa-icon *ngIf="caught" [icon]="faDotCircle"></fa-icon>
         </div>
         <mat-card-title>{{item.name}}</mat-card-title>
     </mat-card-header>
@@ -15,7 +16,7 @@
     <mat-card-content>
         <p><fa-icon [icon]="faMapMarked"></fa-icon> &nbsp; {{item.location}}</p>
         <p><fa-icon [icon]="faClock"></fa-icon> &nbsp; {{item.timeLabel}}</p>
-        <p><fa-icon [icon]="faCalendar"></fa-icon> &nbsp; TODO</p>
+        <p><fa-icon [icon]="faCalendar"></fa-icon> &nbsp; {{hemisphere ? item.northMonthLabel : item.southMonthLabel}}</p>
         <p><fa-icon [icon]="faDollarSign"></fa-icon> &nbsp; {{item.price | number}}</p>
     </mat-card-content>
 </mat-card>

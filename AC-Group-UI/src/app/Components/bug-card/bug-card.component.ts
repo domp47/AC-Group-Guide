@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Bug } from 'src/app/Models/bug.model';
 import { faCircle, faDotCircle } from '@fortawesome/free-regular-svg-icons'
 import { faCalendar, faDollarSign, faClock, faMapMarked  } from '@fortawesome/free-solid-svg-icons'
@@ -18,10 +18,20 @@ export class BugCardComponent implements OnInit {
   faMapMarked = faMapMarked;
 
   @Input() item: Bug;
+  @Input() hemisphere: boolean;
+  @Input() caught: boolean;
+
+  @Output() clicked: EventEmitter<any> = new EventEmitter();
 
   constructor() { }
 
   ngOnInit(): void {
+  }
+
+  itemClicked(){
+    let name = this.item.name;
+    let add = !this.caught;
+    this.clicked.emit({name, add});
   }
 
 }

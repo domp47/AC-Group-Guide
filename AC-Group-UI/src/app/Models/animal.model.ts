@@ -6,6 +6,9 @@ export class Animal extends Collectable {
     // monthSouthLabel: string; TODO
     northMonths: number;
     southMonths: number;
+    northMonthLabel: string;
+    southMonthLabel: string;
+    north
     timeLabel: string;
     timeMask: number;
 }

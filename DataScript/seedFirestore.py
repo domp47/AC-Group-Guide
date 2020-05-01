@@ -52,7 +52,9 @@ for bug in jsonData['Bugs']:
         "timeLabel": bug["timeLabel"],
         "timeMask": int(bug["timeMask"]),
         "northMonths": int(bug["northMonths"]),
-        "southMonths": int(bug["southMonths"])
+        "southMonths": int(bug["southMonths"]),
+        "northMonthLabel": bug["northMonthLabel"],
+        "southMonthLabel": bug["southMonthLabel"]
     })
 
 for fish in jsonData['Fish']:
@@ -71,7 +73,9 @@ for fish in jsonData['Fish']:
         "timeLabel": fish["timeLabel"],
         "timeMask": int(fish["timeMask"]),
         "northMonths": int(fish["northMonths"]),
-        "southMonths": int(fish["southMonths"])
+        "southMonths": int(fish["southMonths"]),
+        "northMonthLabel": fish["northMonthLabel"],
+        "southMonthLabel": fish["southMonthLabel"]
     })
 
 for fossil in jsonData['Fossils']:

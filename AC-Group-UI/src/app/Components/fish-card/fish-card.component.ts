@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { faCircle, faDotCircle, faCalendar, faClock } from '@fortawesome/free-regular-svg-icons';
 import { faDollarSign, faMapMarked, faRulerCombined } from '@fortawesome/free-solid-svg-icons';
 import { Fish } from 'src/app/Models/fish.model';
@@ -19,10 +19,20 @@ export class FishCardComponent implements OnInit {
   faRulerCombined = faRulerCombined;
 
   @Input() item: Fish;
+  @Input() hemisphere: boolean;
+  @Input() caught: boolean;
 
+  @Output() clicked: EventEmitter<any> = new EventEmitter();
+  
   constructor() { }
 
   ngOnInit(): void {
+  }
+
+  itemClicked(){
+    let name = this.item.name;
+    let add = !this.caught;
+    this.clicked.emit({name, add});
   }
 
 }
