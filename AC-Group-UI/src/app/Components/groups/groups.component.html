@@ -2,4 +2,34 @@
 <div *ngIf="authService.group$ | async as group">
   Join code: {{ group.joinCode }}
 </div>
-<button mat-button (click)="groupService.createGroup()">Create Group</button>
+<div *ngIf="authService.members$ | async as members">
+  Members exist...
+  <ol>
+    <li *ngFor="let member of members">
+      {{ member.displayName }}
+      <img height="30" width="30" [src]="member.photoURL" />
+    </li>
+  </ol>
+</div>
+<div>
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="groupService.createGroup()"
+  >
+    Create Group
+  </button>
+</div>
+<div>
+  <mat-form-field>
+    <mat-label>Join Code</mat-label>
+    <input matInput placeholder="XXXX" #joinCode />
+  </mat-form-field>
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="groupService.joinGroup(joinCode.value)"
+  >
+    Join
+  </button>
+</div>
