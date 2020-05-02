@@ -8,6 +8,7 @@ import { AngularFirestore, DocumentSnapshot, DocumentData, QuerySnapshot } from 
 import { AuthService } from 'src/app/Services/auth.service';
 import { mergeMap } from 'rxjs/operators';
 import { FaStackItemSizeDirective } from '@fortawesome/angular-fontawesome';
+import { Group } from 'src/app/Models/group.model';
 
 @Component({
   selector: 'app-home',
@@ -20,13 +21,45 @@ export class HomeComponent implements OnInit {
 
   data: GroupData[] = [];
 
+  inGroup: boolean;
+
   art: Art[] = [];
   bugs: Bug[] = [];
   fish: Fish[] = [];
   fossils: Fossil[] = [];
 
+  nCols: number;
+
   ngOnInit(): void {
     this.getMainData();
+
+    this.authService.getUser().subscribe((fbUser) => {
+      this.db.collection<User>('users').doc<User>(fbUser.uid).valueChanges().subscribe((user) => {
+        this.inGroup = !(user.groupRef == null);
+      });
+    });
+
+    this.nCols = this.calculateCols(window.innerWidth);
+  }
+
+  onResize(event){
+    this.nCols = this.calculateCols(event.target.innerWidth);
+  }
+
+  calculateCols(screenWidth: number): number{
+    if(screenWidth < 650)
+      return 2;
+    if(screenWidth < 850)
+      return 3;
+    if(screenWidth < 1000)
+      return 4;
+    if(screenWidth < 1250)
+      return 5;
+    if(screenWidth < 1500)
+      return 6;
+    if(screenWidth < 1750)
+      return 7;
+    return 8;
   }
 
   getMainData(){
@@ -57,9 +90,6 @@ export class HomeComponent implements OnInit {
         for(let user of data.docs){
           if(user.get('uid') == uid)
             continue;
-
-          console.log(user.data());
-          
 
           var entry = new GroupData();
           entry.name = user.get('displayName');
