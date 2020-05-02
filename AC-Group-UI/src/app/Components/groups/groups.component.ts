@@ -8,7 +8,6 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./groups.component.scss']
 })
 export class GroupsComponent implements OnInit {
-
   constructor(public groupService: GroupService, public authService: AuthService) { }
 
   ngOnInit(): void {

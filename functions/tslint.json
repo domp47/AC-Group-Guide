@@ -1,5 +1,9 @@
 {
   "rules": {
+    "semicolon": [
+      true,
+      "never"
+    ],
     // -- Strict errors --
     // These lint rules are likely always a good idea.
 
