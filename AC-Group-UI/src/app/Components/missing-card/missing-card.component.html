@@ -1,0 +1,11 @@
+<mat-card class="myCard">
+    <mat-card-header>
+        <mat-card-title>{{name}}</mat-card-title>
+    </mat-card-header>
+
+    <div class="center">
+        <img *ngIf="width" [src]="'assets/' + imgLocation" [width]="width">
+        <img *ngIf="!width" [src]="'assets/' + imgLocation">
+
+    </div>
+</mat-card>

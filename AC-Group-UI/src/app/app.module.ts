@@ -64,6 +64,7 @@ import { FossilCardComponent } from './Components/fossil-card/fossil-card.compon
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { MissingCardComponent } from './Components/missing-card/missing-card.component';
 
 @NgModule({
   exports: [
@@ -80,7 +81,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     FishCardComponent,
     ArtCardComponent,
     BugCardComponent,
-    FossilCardComponent
+    FossilCardComponent,
+    MissingCardComponent
   ],
   imports: [
     BrowserModule,
