@@ -2,6 +2,18 @@
     text-align: center;
 }
 
+.right {
+  text-align: right;
+}
+
+.hemisphereContainer {
+  padding: 16px;
+}
+
+.hemisphereIcon {
+  cursor: pointer;
+}
+
 .myCard {
   max-width: 185px;
 }
@@ -19,4 +31,20 @@ h1 {
 
 mat-grid-list {
   margin: 0 16px;
+}
+
+.rotateimg90 {
+  -webkit-transform:rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+
+.rotateimg270 {
+  -webkit-transform:rotate(270deg);
+  -moz-transform: rotate(270deg);
+  -ms-transform: rotate(270deg);
+  -o-transform: rotate(270deg);
+  transform: rotate(270deg);
 }

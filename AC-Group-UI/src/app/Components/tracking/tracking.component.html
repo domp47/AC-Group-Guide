@@ -1,3 +1,7 @@
+<div class="right hemisphereContainer">
+    {{hemisphere ? 'Northern' : 'Southern' }}
+    <img (click)="toggleHemisphere()" width="32px" src="assets/imgs/half-circle.svg" class="hemisphereIcon" [ngClass]="hemisphere ? 'rotateimg270' : 'rotateimg90'">
+</div>
 <div class="center mt-3">
     <mat-button-toggle-group [value]="filter" (change)="filterChange($event)">
         <mat-button-toggle mat-raised-button [value]="0">Art</mat-button-toggle>

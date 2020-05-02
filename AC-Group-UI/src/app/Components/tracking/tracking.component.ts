@@ -51,6 +51,11 @@ export class TrackingComponent implements OnInit {
     this.getData();
   }
 
+  toggleHemisphere(){
+    this.hemisphere = !this.hemisphere;
+    this.getData();
+  }
+  
   getData(){
     this.authService.getUser()
         .pipe(mergeMap(
