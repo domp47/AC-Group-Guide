@@ -8,9 +8,8 @@ describe('FossilCardComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FossilCardComponent ]
-    })
-    .compileComponents();
+      declarations: [FossilCardComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

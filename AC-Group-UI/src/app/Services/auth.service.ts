@@ -11,49 +11,51 @@ import { User as FireUser } from 'firebase';
 import { Router } from '@angular/router';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-  user$: Observable<User>;
-  group$: Observable<Group>;
-  memberObservables$: Observable<Observable<User>[]>;
+  user$: Observable<User>; // If you need access to user data on firestore, only use this.
+  group$: Observable<Group>; // If you need access to group data/members, only use these
   members$: Observable<User[]>;
-  groupDocPath: string;
 
-  constructor(
-    public fireAuth: AngularFireAuth,
-    public db: AngularFirestore,
-    public router: Router
-  ) {
-    this.user$ = this.fireAuth.authState.pipe(
-      switchMap(user => {
-        if (user) {
-          return this.db.doc<User>(`users/${user.uid}`).valueChanges()
-        } else {
-          return of(null);
-        }
-      }
+  constructor(public fireAuth: AngularFireAuth, public db: AngularFirestore, public router: Router) {
+    this.user$ = this.fireAuth.authState
+      .pipe(
+        switchMap((user) => {
+          if (user) {
+            return this.db.doc<User>(`users/${user.uid}`).valueChanges();
+          } else {
+            return of(null);
+          }
+        })
       )
-    ).pipe(map(value => {
-      return value;
-    }));
+      .pipe(
+        map((value) => {
+          return value;
+        })
+      );
 
-    this.group$ = this.user$.pipe(switchMap(user => {
-      if (user && user.groupRef) {
-        return this.db.doc<Group>(user.groupRef.path).valueChanges();
-      } else {
-        return of(null);
-      }
-    }));
-
-    this.members$ = this.user$.pipe(
-      switchMap(user => {
+    this.group$ = this.user$.pipe(
+      switchMap((user) => {
         if (user && user.groupRef) {
-          return this.db.doc<Group>(user.groupRef.path).collection('members').valueChanges();
+          return this.db.doc<Group>(user.groupRef.path).valueChanges();
         } else {
           return of(null);
         }
-      })).pipe(
+      })
+    );
+
+    this.members$ = this.user$
+      .pipe(
+        switchMap((user) => {
+          if (user && user.groupRef) {
+            return this.db.doc<Group>(user.groupRef.path).collection('members').valueChanges();
+          } else {
+            return of(null);
+          }
+        })
+      )
+      .pipe(
         switchMap((members: any[]) => {
           if (members) {
             const memberObservables: Observable<User>[] = members.map(({ userRef }: { userRef: DocumentReference }) => {
@@ -64,9 +66,7 @@ export class AuthService {
           } else {
             return of(null);
           }
-        }
-        )
-
+        })
       );
   }
 
@@ -82,10 +82,10 @@ export class AuthService {
       uid,
       email,
       displayName,
-      photoURL
+      photoURL,
     } as User;
 
-    return userRef.set(data, { merge: true })
+    return userRef.set(data, { merge: true });
   }
 
   async login() {

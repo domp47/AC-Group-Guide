@@ -5,23 +5,22 @@ import { AuthService } from 'src/app/Services/auth.service';
 @Component({
   selector: 'app-menu',
   templateUrl: './menu.component.html',
-  styleUrls: ['./menu.component.scss']
+  styleUrls: ['./menu.component.scss'],
 })
 export class MenuComponent implements OnInit {
-
   isAuthenticated: boolean = false;
 
-  constructor(private authService: AuthService) { }
-  
+  constructor(private authService: AuthService) {}
+
   ngOnInit(): void {
-    this.authService.getUser().subscribe((data:firebase.User) => {
+    this.authService.getUser().subscribe((data: firebase.User) => {
       console.log(data);
-      
+
       this.isAuthenticated = !(data == null);
     });
   }
 
-  logout(){
+  logout() {
     this.authService.logout();
   }
 }

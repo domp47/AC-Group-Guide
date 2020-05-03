@@ -8,9 +8,8 @@ describe('FishCardComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FishCardComponent ]
-    })
-    .compileComponents();
+      declarations: [FishCardComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
