@@ -489,3 +489,5 @@ MigrationBackup/
 ### Python ###
 env/
 *.pyc
+
+Cargo.lock
