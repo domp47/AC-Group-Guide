@@ -18,7 +18,7 @@ import { Items } from './../../Models/items.model';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
-  constructor(private db: AngularFirestore, private authService: AuthService, private itemsService: ItemsService) {}
+  constructor(private db: AngularFirestore, public authService: AuthService, private itemsService: ItemsService) {}
 
   data: GroupData[] = [];
 
