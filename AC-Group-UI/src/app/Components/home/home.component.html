@@ -1,52 +1,58 @@
-<div *ngIf="data">
-  <h1>Your Group's Missing Items</h1>
-  <div class="mat-tab-group">
-    <mat-expansion-panel *ngFor="let item of data" class="mt-2">
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          {{ item.name }}
-        </mat-panel-title>
-      </mat-expansion-panel-header>
+<div *ngIf="authService.user$ | async as user">
+  <div *ngIf="data && user.groupRef">
+    <h1>Your Group's Missing Items</h1>
+    <div class="mat-tab-group">
+      <mat-expansion-panel *ngFor="let item of data" class="mt-2 expansion-panel">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{ item.name }}
+          </mat-panel-title>
+        </mat-expansion-panel-header>
 
-      <mat-tab-group>
-        <mat-tab label="Art">
-          <mat-grid-list [cols]="nCols" gutterSize="1.5rem" rowHeight="250px" (window:resize)="onResize($event)">
-            <mat-grid-tile *ngFor="let art of item.art">
-              <app-missing-card
-                class="app-card"
-                [name]="art.name"
-                [imgLocation]="art.imgLocation"
-                [width]="art.width"
-              ></app-missing-card>
-            </mat-grid-tile>
-          </mat-grid-list>
-        </mat-tab>
-        <mat-tab label="Bugs">
-          <mat-grid-list [cols]="nCols" gutterSize="1.5rem" rowHeight="200px" (window:resize)="onResize($event)">
-            <mat-grid-tile *ngFor="let bug of item.bugs">
-              <app-missing-card class="app-card" [name]="bug.name" [imgLocation]="bug.imgLocation"></app-missing-card>
-            </mat-grid-tile>
-          </mat-grid-list>
-        </mat-tab>
-        <mat-tab label="Fish">
-          <mat-grid-list [cols]="nCols" gutterSize="1.5rem" rowHeight="200px" (window:resize)="onResize($event)">
-            <mat-grid-tile *ngFor="let fish of item.fish">
-              <app-missing-card class="app-card" [name]="fish.name" [imgLocation]="fish.imgLocation"></app-missing-card>
-            </mat-grid-tile>
-          </mat-grid-list>
-        </mat-tab>
-        <mat-tab label="Fossils">
-          <mat-grid-list [cols]="nCols" gutterSize="1.5rem" rowHeight="200px" (window:resize)="onResize($event)">
-            <mat-grid-tile *ngFor="let fossil of item.fossils">
-              <app-missing-card
-                class="app-card"
-                [name]="fossil.name"
-                [imgLocation]="fossil.imgLocation"
-              ></app-missing-card>
-            </mat-grid-tile>
-          </mat-grid-list>
-        </mat-tab>
-      </mat-tab-group>
-    </mat-expansion-panel>
+        <mat-tab-group>
+          <mat-tab label="Art">
+            <div class="items-grid">
+              <div class="item-container" *ngFor="let art of item.art">
+                <app-missing-card
+                  class="app-card"
+                  [name]="art.name"
+                  [imgLocation]="art.imgLocation"
+                  [width]="art.width"
+                ></app-missing-card>
+              </div>
+            </div>
+          </mat-tab>
+          <mat-tab label="Bugs">
+            <div class="items-grid">
+              <div class="item-container" *ngFor="let bug of item.bugs">
+                <app-missing-card class="app-card" [name]="bug.name" [imgLocation]="bug.imgLocation"></app-missing-card>
+              </div>
+            </div>
+          </mat-tab>
+          <mat-tab label="Fish">
+            <div class="items-grid">
+              <div class="item-container" *ngFor="let fish of item.fish">
+                <app-missing-card
+                  class="app-card"
+                  [name]="fish.name"
+                  [imgLocation]="fish.imgLocation"
+                ></app-missing-card>
+              </div>
+            </div>
+          </mat-tab>
+          <mat-tab label="Fossils">
+            <div class="items-grid">
+              <div class="item-container" *ngFor="let fossil of item.fossils">
+                <app-missing-card
+                  class="app-card"
+                  [name]="fossil.name"
+                  [imgLocation]="fossil.imgLocation"
+                ></app-missing-card>
+              </div>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
+      </mat-expansion-panel>
+    </div>
   </div>
 </div>

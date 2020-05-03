@@ -53,6 +53,36 @@ mat-grid-list {
   display: flex;
   align-items: center;
   justify-content: center;
+  animation: cardEntrance 600ms ease-out;
+  animation-fill-mode: backwards;
+}
+
+.tab-group {
+  animation: tabGroupEntrance 500ms ease-out;
+  animation-fill-mode: backwards;
+}
+
+@keyframes tabGroupEntrance {
+  from {
+    opacity: 0;
+    transform: scale(0.8, 0.5) translate(0, -3rem);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1, 1) translate(0, 0);
+  }
+}
+
+
+@keyframes cardEntrance {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .items-grid {
