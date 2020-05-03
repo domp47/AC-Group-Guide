@@ -1,5 +1,5 @@
 .center {
-    text-align: center;
+  text-align: center;
 }
 
 .right {
@@ -34,7 +34,7 @@ mat-grid-list {
 }
 
 .rotateimg90 {
-  -webkit-transform:rotate(90deg);
+  -webkit-transform: rotate(90deg);
   -moz-transform: rotate(90deg);
   -ms-transform: rotate(90deg);
   -o-transform: rotate(90deg);
@@ -42,9 +42,63 @@ mat-grid-list {
 }
 
 .rotateimg270 {
-  -webkit-transform:rotate(270deg);
+  -webkit-transform: rotate(270deg);
   -moz-transform: rotate(270deg);
   -ms-transform: rotate(270deg);
   -o-transform: rotate(270deg);
   transform: rotate(270deg);
+}
+
+.item-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.items-grid {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+@media only screen and (max-width: 650px) {
+  .items-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media only screen and (min-width: 650px) and (max-width: 850px) {
+  .items-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media only screen and (min-width: 850px) and (max-width: 1000px) {
+  .items-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media only screen and (min-width: 1000px) and (max-width: 1250px) {
+  .items-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+@media only screen and (min-width: 1250px) and (max-width: 1500px) {
+  .items-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+@media only screen and (min-width: 1500px) and (max-width: 1750px) {
+  .items-grid {
+    grid-template-columns: repeat(7, 1fr);
+  }
+}
+
+@media only screen and (min-width: 1750px) {
+  .items-grid {
+    grid-template-columns: repeat(8, 1fr);
+  }
 }

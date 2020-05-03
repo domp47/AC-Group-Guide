@@ -1,18 +1,24 @@
 .myCard {
-    max-width: 200px;
-    height: 100%;
+  height: 100%;
+  max-width: 200px;
+  display: flex;
+  flex-direction: column;
 }
 
-.center {
-    text-align: center;
-}
-
-.mat-card-content {
-    position: absolute;
-    bottom: 0;
-    padding-bottom: 3%;
+.img-container {
+  flex: 1 1 auto;
+  display: flex;
+  justify-content: center;
 }
 
 .pointer {
-    cursor: pointer;
+  cursor: pointer;
+}
+
+.card-container {
+  height: 100%;
+  width: 100%;
+  max-width: 200px;
+  display: fle1x;
+  justify-content: center;
 }

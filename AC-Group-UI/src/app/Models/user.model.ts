@@ -6,4 +6,5 @@ export class User {
     photoURL?: string;
     displayName?: string;
     groupRef: DocumentReference;
+    itemsCaught: string[];
 }

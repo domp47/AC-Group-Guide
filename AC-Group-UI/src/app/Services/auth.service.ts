@@ -14,11 +14,10 @@ import { Router } from '@angular/router';
   providedIn: 'root'
 })
 export class AuthService {
-  user$: Observable<User>;
-  group$: Observable<Group>;
-  memberObservables$: Observable<Observable<User>[]>;
+
+  user$: Observable<User>; // If you need access to user data on firestore, only use this.
+  group$: Observable<Group>; // If you need access to group data/members, only use these
   members$: Observable<User[]>;
-  groupDocPath: string;
 
   constructor(
     public fireAuth: AngularFireAuth,
