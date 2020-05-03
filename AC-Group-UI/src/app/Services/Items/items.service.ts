@@ -3,7 +3,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ItemsService {
   items: any;
@@ -12,5 +12,4 @@ export class ItemsService {
     this.items = this.db.doc('resources/items').get();
     this.items$ = this.db.doc('resources/items').valueChanges();
   }
-
 }

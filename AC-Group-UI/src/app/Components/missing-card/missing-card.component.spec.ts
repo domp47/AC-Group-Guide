@@ -8,9 +8,8 @@ describe('MissingCardComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MissingCardComponent ]
-    })
-    .compileComponents();
+      declarations: [MissingCardComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

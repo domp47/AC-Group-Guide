@@ -6,10 +6,9 @@ import { Fish } from 'src/app/Models/fish.model';
 @Component({
   selector: 'app-fish-card',
   templateUrl: './fish-card.component.html',
-  styleUrls: ['./fish-card.component.scss']
+  styleUrls: ['./fish-card.component.scss'],
 })
 export class FishCardComponent implements OnInit {
-
   faCircle = faCircle;
   faDotCircle = faDotCircle;
   faDollarSign = faDollarSign;
@@ -23,16 +22,14 @@ export class FishCardComponent implements OnInit {
   @Input() caught: boolean;
 
   @Output() clicked: EventEmitter<any> = new EventEmitter();
-  
-  constructor() { }
 
-  ngOnInit(): void {
-  }
+  constructor() {}
 
-  itemClicked(){
+  ngOnInit(): void {}
+
+  itemClicked() {
     let name = this.item.name;
     let add = !this.caught;
-    this.clicked.emit({name, add});
+    this.clicked.emit({ name, add });
   }
-
 }

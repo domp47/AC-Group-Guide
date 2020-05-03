@@ -15,15 +15,10 @@ import { Items } from './../../Models/items.model';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
-
-  constructor(
-    private db: AngularFirestore,
-    private authService: AuthService,
-    private itemsService: ItemsService
-  ) { }
+  constructor(private db: AngularFirestore, private authService: AuthService, private itemsService: ItemsService) {}
 
   data: GroupData[] = [];
 
@@ -46,18 +41,12 @@ export class HomeComponent implements OnInit {
   }
 
   calculateCols(screenWidth: number): number {
-    if (screenWidth < 650)
-      return 2;
-    if (screenWidth < 850)
-      return 3;
-    if (screenWidth < 1000)
-      return 4;
-    if (screenWidth < 1250)
-      return 5;
-    if (screenWidth < 1500)
-      return 6;
-    if (screenWidth < 1750)
-      return 7;
+    if (screenWidth < 650) return 2;
+    if (screenWidth < 850) return 3;
+    if (screenWidth < 1000) return 4;
+    if (screenWidth < 1250) return 5;
+    if (screenWidth < 1500) return 6;
+    if (screenWidth < 1750) return 7;
     return 8;
   }
 
@@ -74,43 +63,45 @@ export class HomeComponent implements OnInit {
 
   getData() {
     this.authService.user$.pipe(first()).subscribe((me: User) => {
-      this.authService.members$.subscribe(members => {
+      this.authService.members$.subscribe((members) => {
         console.log(members);
-        this.updateStuff(me.uid, members)
-      })
-    })
+        this.updateStuff(me.uid, members);
+      });
+    });
   }
 
   updateStuff(myUid: string, members: User[]) {
     this.data = [];
     for (let user of members) {
-      if (user.uid === myUid)
-        continue;
+      if (user.uid === myUid) continue;
 
       let entry = new GroupData();
       entry.name = user.displayName;
 
       let caughtItems: string[] = user.itemsCaught;
-      if (caughtItems == null)
-        caughtItems = [];
+      if (caughtItems == null) caughtItems = [];
 
       for (let a of this.art) {
-        if (caughtItems.indexOf(a.name) === -1) //Not caught yet
+        if (caughtItems.indexOf(a.name) === -1)
+          //Not caught yet
           entry.art.push(a);
       }
 
       for (let b of this.bugs) {
-        if (caughtItems.indexOf(b.name) === -1) //Not caught yet
+        if (caughtItems.indexOf(b.name) === -1)
+          //Not caught yet
           entry.bugs.push(b);
       }
 
       for (let f of this.fish) {
-        if (caughtItems.indexOf(f.name) === -1) //Not caught yet
+        if (caughtItems.indexOf(f.name) === -1)
+          //Not caught yet
           entry.fish.push(f);
       }
 
       for (let f of this.fossils) {
-        if (caughtItems.indexOf(f.name) === -1) //Not caught yet
+        if (caughtItems.indexOf(f.name) === -1)
+          //Not caught yet
           entry.fossils.push(f);
       }
 

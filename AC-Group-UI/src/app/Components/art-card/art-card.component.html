@@ -10,11 +10,7 @@
 
     <div class="img-container">
       <a [href]="'assets/' + item.imgLocation" target="_blank">
-        <img
-          *ngIf="item.isPainting"
-          [width]="item.width"
-          [src]="'assets/' + item.imgLocation"
-        />
+        <img *ngIf="item.isPainting" [width]="item.width" [src]="'assets/' + item.imgLocation" />
         <img *ngIf="!item.isPainting" [src]="'assets/' + item.imgLocation" />
       </a>
     </div>

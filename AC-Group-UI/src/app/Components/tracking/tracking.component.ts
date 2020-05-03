@@ -11,10 +11,9 @@ import { Items } from './../../Models/items.model';
 @Component({
   selector: 'app-tracking',
   templateUrl: './tracking.component.html',
-  styleUrls: ['./tracking.component.scss']
+  styleUrls: ['./tracking.component.scss'],
 })
 export class TrackingComponent implements OnInit {
-
   /**
    * 0 = Art
    * 1 = Bugs
@@ -24,7 +23,7 @@ export class TrackingComponent implements OnInit {
   filter = 0;
 
   artCollected = [];
-  artMissing = []
+  artMissing = [];
 
   fossilCollected = [];
   fossilMissing = [];
@@ -46,7 +45,7 @@ export class TrackingComponent implements OnInit {
     private authService: AuthService,
     public itemsService: ItemsService,
     private cdr: ChangeDetectorRef
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.getData();
@@ -59,14 +58,11 @@ export class TrackingComponent implements OnInit {
 
   getData() {
     console.log('Gets here...');
-    this.authService.user$.pipe().subscribe(
-      user => {
-        this.itemsService.items$.pipe().subscribe(
-          items => {
-            this.updateData(user, items);
-          }
-        )
-      })
+    this.authService.user$.pipe().subscribe((user) => {
+      this.itemsService.items$.pipe().subscribe((items) => {
+        this.updateData(user, items);
+      });
+    });
   }
 
   updateData(user: User, items: Items) {
@@ -79,7 +75,7 @@ export class TrackingComponent implements OnInit {
     let mBit = 1 << (11 - new Date().getMonth());
     let hBit = 1 << (23 - new Date().getHours() - 1);
 
-    this.artCollected = []
+    this.artCollected = [];
     this.artMissing = [];
 
     for (let art of artData) {
@@ -118,7 +114,10 @@ export class TrackingComponent implements OnInit {
 
     for (let fish of fishData) {
       if (itemsCaught.indexOf(fish.name) == -1) {
-        if ((this.hemisphere && (fish.northMonths & mBit) != 0) || (!this.hemisphere && (fish.southMonths & mBit) != 0)) {
+        if (
+          (this.hemisphere && (fish.northMonths & mBit) != 0) ||
+          (!this.hemisphere && (fish.southMonths & mBit) != 0)
+        ) {
           if ((fish.timeMask & hBit) != 0) {
             this.fishAvail.push(fish);
           } else {
@@ -132,7 +131,7 @@ export class TrackingComponent implements OnInit {
       }
     }
 
-    this.fossilCollected = []
+    this.fossilCollected = [];
     this.fossilMissing = [];
 
     for (let fossil of fossilsData) {
@@ -160,10 +159,12 @@ export class TrackingComponent implements OnInit {
         }
       }
 
-      this.db.collection<User>('users').doc(user.uid).set({
-        itemsCaught
-      }, { merge: true });
-
+      this.db.collection<User>('users').doc(user.uid).set(
+        {
+          itemsCaught,
+        },
+        { merge: true }
+      );
     });
   }
 
@@ -173,5 +174,4 @@ export class TrackingComponent implements OnInit {
     // TODO: figure out what is happening
     this.cdr.detectChanges();
   }
-
 }

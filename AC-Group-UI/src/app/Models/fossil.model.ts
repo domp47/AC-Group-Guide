@@ -1,4 +1,3 @@
 import { Collectable } from './collectable.model';
 
-export class Fossil extends Collectable{
-}
+export class Fossil extends Collectable {}

@@ -1,5 +1,5 @@
 <div class="right hemisphereContainer">
-  {{ hemisphere ? "Northern" : "Southern" }}
+  {{ hemisphere ? 'Northern' : 'Southern' }}
   <img
     (click)="toggleHemisphere()"
     width="32px"
@@ -22,24 +22,14 @@
     <h1>Not Obtained</h1>
     <div class="items-grid">
       <div class="item-container" *ngFor="let art of artMissing">
-        <app-art-card
-          class="app-card"
-          [item]="art"
-          (clicked)="catchItem($event)"
-          [caught]="false"
-        ></app-art-card>
+        <app-art-card class="app-card" [item]="art" (clicked)="catchItem($event)" [caught]="false"></app-art-card>
       </div>
     </div>
 
     <h1>Collected</h1>
     <div class="items-grid">
       <div class="item-container" *ngFor="let art of artCollected">
-        <app-art-card
-          class="app-card"
-          [item]="art"
-          (clicked)="catchItem($event)"
-          [caught]="true"
-        ></app-art-card>
+        <app-art-card class="app-card" [item]="art" (clicked)="catchItem($event)" [caught]="true"></app-art-card>
       </div>
     </div>
   </div>

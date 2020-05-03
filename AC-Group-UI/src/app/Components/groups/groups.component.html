@@ -1,7 +1,5 @@
 <p>groups works!</p>
-<div *ngIf="authService.group$ | async as group">
-  Join code: {{ group.joinCode }}
-</div>
+<div *ngIf="authService.group$ | async as group">Join code: {{ group.joinCode }}</div>
 <div *ngIf="authService.members$ | async as members">
   Members exist...
   <ol>
@@ -12,11 +10,7 @@
   </ol>
 </div>
 <div>
-  <button
-    mat-raised-button
-    color="primary"
-    (click)="groupService.createGroup()"
-  >
+  <button mat-raised-button color="primary" (click)="groupService.createGroup()">
     Create Group
   </button>
 </div>
@@ -25,11 +19,7 @@
     <mat-label>Join Code</mat-label>
     <input matInput placeholder="XXXX" #joinCode />
   </mat-form-field>
-  <button
-    mat-raised-button
-    color="primary"
-    (click)="groupService.joinGroup(joinCode.value)"
-  >
+  <button mat-raised-button color="primary" (click)="groupService.joinGroup(joinCode.value)">
     Join
   </button>
 </div>
