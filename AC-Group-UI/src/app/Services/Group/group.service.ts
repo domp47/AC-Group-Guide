@@ -3,13 +3,10 @@ import { Injectable } from '@angular/core';
 import { AngularFireFunctions } from '@angular/fire/functions';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class GroupService {
-
-  constructor(public fns: AngularFireFunctions, public db: AngularFirestore) {
-
-  }
+  constructor(public fns: AngularFireFunctions, public db: AngularFirestore) {}
 
   async createGroup(groupName = 'ThisIsAGroupName') {
     const _createGroup = this.fns.httpsCallable('createGroup');

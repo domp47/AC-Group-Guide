@@ -1,12 +1,12 @@
 <mat-toolbar color="primary">
-    <a *ngIf="isAuthenticated" mat-button [routerLink]="['/home']">Home</a>
-    <a *ngIf="isAuthenticated" mat-button [routerLink]="['/tracking']">My Items</a>
+  <a *ngIf="isAuthenticated" mat-button [routerLink]="['/home']">Home</a>
+  <a *ngIf="isAuthenticated" mat-button [routerLink]="['/tracking']">My Items</a>
 
-    <span class="fill-remaining-space"></span>
+  <span class="fill-remaining-space"></span>
 
-    <a *ngIf="isAuthenticated" mat-button [routerLink]="['/groups']">Groups</a>
-    <a *ngIf="isAuthenticated" mat-button [routerLink]="['/admin']">Administration</a>
-    
-    <a *ngIf="!isAuthenticated" mat-button [routerLink]="['login']">Login</a>
-    <a *ngIf="isAuthenticated" mat-button (click)="logout()">Logout</a>
+  <a *ngIf="isAuthenticated" mat-button [routerLink]="['/groups']">Groups</a>
+  <a *ngIf="isAuthenticated" mat-button [routerLink]="['/admin']">Administration</a>
+
+  <a *ngIf="!isAuthenticated" mat-button [routerLink]="['login']">Login</a>
+  <a *ngIf="isAuthenticated" mat-button (click)="logout()">Logout</a>
 </mat-toolbar>

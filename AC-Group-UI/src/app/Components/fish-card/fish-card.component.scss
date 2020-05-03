@@ -1,23 +1,32 @@
 .myCard {
-    max-width: 200px;
-    height: 100%;
-}
-
-.center {
-    text-align: center;
+  height: 100%;
+  width: 100%;
+  max-width: 200px;
+  display: flex;
+  flex-direction: column;
 }
 
 .item {
-    border-color: white;
-    border-radius: 2px;
-}
-
-.mat-card-content {
-    position: absolute;
-    bottom: 0;
-    padding-bottom: 3%;
+  border-color: white;
+  border-radius: 2px;
 }
 
 .pointer {
-    cursor: pointer;
+  cursor: pointer;
+}
+
+.img-container {
+  flex: 1 1 auto;
+  display: flex;
+  justify-content: center;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.card-container {
+  height: 100%;
+  display: flex;
+  justify-content: center;
 }

@@ -6,10 +6,9 @@ import { Fossil } from 'src/app/Models/fossil.model';
 @Component({
   selector: 'app-fossil-card',
   templateUrl: './fossil-card.component.html',
-  styleUrls: ['./fossil-card.component.scss']
+  styleUrls: ['./fossil-card.component.scss'],
 })
 export class FossilCardComponent implements OnInit {
-
   faCircle = faCircle;
   faDotCircle = faDotCircle;
   faDollarSign = faDollarSign;
@@ -18,15 +17,13 @@ export class FossilCardComponent implements OnInit {
   @Input() caught: boolean;
 
   @Output() clicked: EventEmitter<any> = new EventEmitter();
-  constructor() { }
+  constructor() {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
-  itemClicked(){
+  itemClicked() {
     let name = this.item.name;
     let add = !this.caught;
-    this.clicked.emit({name, add});
+    this.clicked.emit({ name, add });
   }
-
 }

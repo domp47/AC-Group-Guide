@@ -3,11 +3,7 @@
     {
       "target": "AC-Group-UI",
       "public": "dist/AC-Group-UI",
-      "ignore": [
-        "firebase.json",
-        "**/.*",
-        "**/node_modules/**"
-      ],
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
       "rewrites": [
         {
           "source": "**",

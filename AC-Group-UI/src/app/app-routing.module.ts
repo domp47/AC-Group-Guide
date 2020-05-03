@@ -14,32 +14,37 @@ const routes: Routes = [
   {
     path: '',
     redirectTo: 'home',
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
   {
     path: 'login',
-    component: LoginComponent, ...canActivate(goHome)
+    component: LoginComponent,
+    ...canActivate(goHome),
   },
   {
     path: 'home',
-    component: HomeComponent, ...canActivate(redirectUnauthorizedToLogin)
+    component: HomeComponent,
+    ...canActivate(redirectUnauthorizedToLogin),
   },
   {
     path: 'admin',
-    component: AdminComponent, ...canActivate(redirectUnauthorizedToLogin)
+    component: AdminComponent,
+    ...canActivate(redirectUnauthorizedToLogin),
   },
   {
     path: 'groups',
-    component: GroupsComponent, ...canActivate(redirectUnauthorizedToLogin)
+    component: GroupsComponent,
+    ...canActivate(redirectUnauthorizedToLogin),
   },
   {
     path: 'tracking',
-    component: TrackingComponent, ...canActivate(redirectUnauthorizedToLogin)
-  }
+    component: TrackingComponent,
+    ...canActivate(redirectUnauthorizedToLogin),
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}
