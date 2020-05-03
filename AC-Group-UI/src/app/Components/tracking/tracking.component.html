@@ -2,23 +2,16 @@
   {{ hemisphere ? 'Northern' : 'Southern' }}
   <img
     (click)="toggleHemisphere()"
-    width="32px"
-    src="assets/imgs/half-circle.svg"
+    width="32"
+    height="32"
+    src="assets/imgs/half-circle-white.svg"
     class="hemisphereIcon"
-    [ngClass]="hemisphere ? 'rotateimg270' : 'rotateimg90'"
+    [ngClass]="hemisphere ? 'rotateimg90' : 'rotateimg270'"
   />
 </div>
-<div class="center mt-3">
-  <mat-button-toggle-group [value]="filter" (change)="filterChange($event)">
-    <mat-button-toggle mat-raised-button [value]="0">Art</mat-button-toggle>
-    <mat-button-toggle mat-raised-button [value]="1">Bugs</mat-button-toggle>
-    <mat-button-toggle mat-raised-button [value]="2">Fish</mat-button-toggle>
-    <mat-button-toggle mat-raised-button [value]="3">Fossils</mat-button-toggle>
-  </mat-button-toggle-group>
-</div>
 
-<div class="mt-4">
-  <div *ngIf="filter === 0">
+<mat-tab-group class="tab-group">
+  <mat-tab label="Art">
     <h1>Not Obtained</h1>
     <div class="items-grid">
       <div class="item-container" *ngFor="let art of artMissing">
@@ -32,9 +25,9 @@
         <app-art-card class="app-card" [item]="art" (clicked)="catchItem($event)" [caught]="true"></app-art-card>
       </div>
     </div>
-  </div>
+  </mat-tab>
 
-  <div *ngIf="filter === 1">
+  <mat-tab label="Bugs">
     <h1>Available To Catch</h1>
     <div class="items-grid">
       <div class="item-container" *ngFor="let bug of bugsAvail">
@@ -86,9 +79,9 @@
         ></app-bug-card>
       </div>
     </div>
-  </div>
+  </mat-tab>
 
-  <div *ngIf="filter === 2">
+  <mat-tab label="Fish">
     <h1>Available To Catch</h1>
     <div class="items-grid">
       <div class="item-container" *ngFor="let fish of fishAvail">
@@ -140,9 +133,9 @@
         ></app-fish-card>
       </div>
     </div>
-  </div>
+  </mat-tab>
 
-  <div *ngIf="filter === 3">
+  <mat-tab label="Fossils">
     <h1>Not Obtained</h1>
     <div class="items-grid">
       <div class="item-container" *ngFor="let fossil of fossilMissing">
@@ -166,5 +159,5 @@
         ></app-fossil-card>
       </div>
     </div>
-  </div>
-</div>
+  </mat-tab>
+</mat-tab-group>
