@@ -1,26 +1,27 @@
 table! {
     acRoles (id) {
         id -> Int4,
-        label -> Nullable<Varchar>,
+        label -> Varchar,
     }
 }
 
 table! {
     acUsers (id) {
         id -> Int4,
-        googleId -> Nullable<Varchar>,
-        displayName -> Nullable<Varchar>,
+        googleId -> Varchar,
+        displayName -> Varchar,
         groupId -> Nullable<Int4>,
-        roleId -> Nullable<Int4>,
+        roleId -> Int4,
     }
 }
 
 table! {
     collectables (id) {
         id -> Int4,
-        displayName -> Nullable<Varchar>,
-        imgLocation -> Nullable<Varchar>,
-        typeId -> Nullable<Int4>,
+        displayName -> Varchar,
+        imgLocation -> Varchar,
+        typeId -> Int4,
+        price -> Int4,
         spawnLocation -> Nullable<Varchar>,
         northMask -> Nullable<Int4>,
         southMask -> Nullable<Int4>,
@@ -29,7 +30,7 @@ table! {
         timeMask -> Nullable<Int4>,
         timeLabel -> Nullable<Varchar>,
         shadowSize -> Nullable<Varchar>,
-        orgiginal -> Nullable<Varchar>,
+        original -> Nullable<Varchar>,
         artist -> Nullable<Varchar>,
         imgLocationAlt -> Nullable<Varchar>,
     }
@@ -39,23 +40,23 @@ table! {
     collectableTypes (id) {
         id -> Int4,
         #[sql_name = "type"]
-        type_ -> Nullable<Varchar>,
+        type_ -> Varchar,
     }
 }
 
 table! {
     collectedItems (id) {
         id -> Int4,
-        userId -> Nullable<Int4>,
-        collectableId -> Nullable<Int4>,
+        userId -> Int4,
+        collectableId -> Int4,
     }
 }
 
 table! {
     groups (id) {
         id -> Int4,
-        name -> Nullable<Varchar>,
-        joinCode -> Nullable<Varchar>,
+        name -> Varchar,
+        joinCode -> Varchar,
     }
 }
 
