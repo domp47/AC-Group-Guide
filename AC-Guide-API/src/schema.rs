@@ -45,8 +45,7 @@ table! {
 }
 
 table! {
-    collectedItems (id) {
-        id -> Int4,
+    collectedItems (userId, collectableId) {
         userId -> Int4,
         collectableId -> Int4,
     }

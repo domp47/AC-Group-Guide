@@ -42,9 +42,9 @@ CREATE TABLE "collectables" (
 );
 
 CREATE TABLE "collectedItems" (
-  "id" SERIAL PRIMARY KEY,
   "userId" integer NOT NULL,
-  "collectableId" integer NOT NULL
+  "collectableId" integer NOT NULL,
+  PRIMARY KEY ("userId", "collectableId")
 );
 
 ALTER TABLE "acUsers" ADD FOREIGN KEY ("groupId") REFERENCES "groups" ("id");
@@ -56,5 +56,3 @@ ALTER TABLE "collectables" ADD FOREIGN KEY ("typeId") REFERENCES "collectableTyp
 ALTER TABLE "collectedItems" ADD FOREIGN KEY ("userId") REFERENCES "acUsers" ("id");
 
 ALTER TABLE "collectedItems" ADD FOREIGN KEY ("collectableId") REFERENCES "collectables" ("id");
-
-ALTER TABLE "collectedItems" ADD UNIQUE ("userId", "collectableId");
