@@ -1,10 +1,10 @@
 use diesel;
 use diesel::prelude::*;
-use disel::pg::PgConnection;
+use diesel::pg::PgConnection;
 
-use schema::collectables;
+use crate::schema::collectables;
 
-#[table_name = "collectables"]
+//#[table_name = "collectables"]
 #[derive(Serialize, Deserialize, Queryable)]
 #[serde(rename_all = "camelCase")]
 pub struct Collectable {

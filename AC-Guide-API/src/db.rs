@@ -6,18 +6,23 @@ use rocket::{Request, State, Outcome};
 use r2d2;
 use r2d2_diesel::ConnectionManager;
 
-use disel::pg::PgConnection;
+use diesel::pg::PgConnection;
 
 pub type Pool = r2d2::Pool<ConnectionManager<PgConnection>>;
-static DATABASE_URL: &'static str = env!("DATABASE_URL");
 
 pub fn connect() -> Pool {
-    let manager = ConnectionManager::<PgConnection>::new(DATABASE_URL);
+    let mut database_url = "".to_string();
+    match std::env::var("DATABASE_URL") {
+        Ok(val) => database_url = val,
+        Err(e) => println!("couldn't get db url from env variable 'DATABASE_URL': {}", e)
+    }
+
+    let manager = ConnectionManager::<PgConnection>::new(database_url);
     r2d2::Pool::builder().build(manager).expect("Failed to create db pool")
 }
 
 // Connection request guard type: a wrapper around an r2d2 pooled connection.
-pub struct Connection(pub r2d2::PooledConnection<ConnectionManager<MysqlConnection>>);
+pub struct Connection(pub r2d2::PooledConnection<ConnectionManager<PgConnection>>);
 
 /// Attempts to retrieve a single connection from the managed database pool. If
 /// no pool is currently managed, fails with an `InternalServerError` status. If
