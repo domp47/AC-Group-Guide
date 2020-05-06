@@ -34,10 +34,14 @@ impl Collectable {
         let type_ = collect_type as i32;
 
 
-        crate::schema::collectables::dsl::collectables
-//            .inner_join(collected_items::table::)
+        let data: Vec<i32> = crate::schema::collectables::dsl::collectables
+            .inner_join(crate::schema::collected_items::dsl::collected_items.on(collected_items::user_id.eq(collectables::id)))
             .filter(collectables::id.eq(type_))
-            .load::<Collectable>(connection).expect("Error Getting Collectable.")
+//            .select((collectables::id, collectables::display_name, collectables::img_location, collectables::type_id, collectables::price))
+            .select((collectables::id))
+            .load(connection).expect("Error Getting Collectable.");
+
+        Vec::new()
 
     }
 
