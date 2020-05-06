@@ -1,43 +1,43 @@
 table! {
-    acRoles (id) {
+    ac_roles (id) {
         id -> Int4,
         label -> Varchar,
     }
 }
 
 table! {
-    acUsers (id) {
+    ac_users (id) {
         id -> Int4,
-        googleId -> Varchar,
-        displayName -> Varchar,
-        groupId -> Nullable<Int4>,
-        roleId -> Int4,
+        google_id -> Varchar,
+        display_name -> Varchar,
+        group_id -> Nullable<Int4>,
+        role_id -> Int4,
     }
 }
 
 table! {
     collectables (id) {
         id -> Int4,
-        displayName -> Varchar,
-        imgLocation -> Varchar,
-        typeId -> Int4,
+        display_name -> Varchar,
+        img_location -> Varchar,
+        type_id -> Int4,
         price -> Int4,
-        spawnLocation -> Nullable<Varchar>,
-        northMask -> Nullable<Int4>,
-        southMask -> Nullable<Int4>,
-        northLabel -> Nullable<Varchar>,
-        southLabel -> Nullable<Varchar>,
-        timeMask -> Nullable<Int4>,
-        timeLabel -> Nullable<Varchar>,
-        shadowSize -> Nullable<Varchar>,
+        spawn_location -> Nullable<Varchar>,
+        north_mask -> Nullable<Int4>,
+        south_mask -> Nullable<Int4>,
+        north_label -> Nullable<Varchar>,
+        south_label -> Nullable<Varchar>,
+        time_mask -> Nullable<Int4>,
+        time_label -> Nullable<Varchar>,
+        shadow_size -> Nullable<Varchar>,
         original -> Nullable<Varchar>,
         artist -> Nullable<Varchar>,
-        imgLocationAlt -> Nullable<Varchar>,
+        img_location_alt -> Nullable<Varchar>,
     }
 }
 
 table! {
-    collectableTypes (id) {
+    collectable_types (id) {
         id -> Int4,
         #[sql_name = "type"]
         type_ -> Varchar,
@@ -45,9 +45,9 @@ table! {
 }
 
 table! {
-    collectedItems (userId, collectableId) {
-        userId -> Int4,
-        collectableId -> Int4,
+    collected_items (user_id, collectable_id) {
+        user_id -> Int4,
+        collectable_id -> Int4,
     }
 }
 
@@ -55,21 +55,21 @@ table! {
     groups (id) {
         id -> Int4,
         name -> Varchar,
-        joinCode -> Varchar,
+        join_code -> Varchar,
     }
 }
 
-joinable!(acUsers -> acRoles (roleId));
-joinable!(acUsers -> groups (groupId));
-joinable!(collectables -> collectableTypes (typeId));
-joinable!(collectedItems -> acUsers (userId));
-joinable!(collectedItems -> collectables (collectableId));
+joinable!(ac_users -> ac_roles (role_id));
+joinable!(ac_users -> groups (group_id));
+joinable!(collectables -> collectable_types (type_id));
+joinable!(collected_items -> ac_users (user_id));
+joinable!(collected_items -> collectables (collectable_id));
 
 allow_tables_to_appear_in_same_query!(
-    acRoles,
-    acUsers,
+    ac_roles,
+    ac_users,
     collectables,
-    collectableTypes,
-    collectedItems,
+    collectable_types,
+    collected_items,
     groups,
 );

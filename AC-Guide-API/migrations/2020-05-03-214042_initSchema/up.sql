@@ -1,12 +1,12 @@
-CREATE TABLE "acUsers" (
+CREATE TABLE "ac_users" (
   "id" SERIAL PRIMARY KEY,
-  "googleId" varchar(28) NOT NULL,
-  "displayName" varchar(255) NOT NULL,
-  "groupId" integer,
-  "roleId" integer NOT NULL
+  "google_id" varchar(28) NOT NULL,
+  "display_name" varchar(255) NOT NULL,
+  "group_id" integer,
+  "role_id" integer NOT NULL
 );
 
-CREATE TABLE "acRoles" (
+CREATE TABLE "ac_roles" (
   "id" integer PRIMARY KEY,
   "label" varchar(255) NOT NULL
 );
@@ -14,45 +14,45 @@ CREATE TABLE "acRoles" (
 CREATE TABLE "groups" (
   "id" SERIAL PRIMARY KEY,
   "name" varchar(255) NOT NULL,
-  "joinCode" varchar(8) NOT NULL
+  "join_code" varchar(8) NOT NULL
 );
 
-CREATE TABLE "collectableTypes" (
+CREATE TABLE "collectable_types" (
   "id" integer PRIMARY KEY,
   "type" varchar(255) NOT NULL
 );
 
 CREATE TABLE "collectables" (
   "id" SERIAL PRIMARY KEY,
-  "displayName" varchar(255) NOT NULL,
-  "imgLocation" varchar(255) NOT NULL,
-  "typeId" integer NOT NULL,
+  "display_name" varchar(255) NOT NULL,
+  "img_location" varchar(255) NOT NULL,
+  "type_id" integer NOT NULL,
   "price" integer NOT NULL,
-  "spawnLocation" varchar(255),
-  "northMask" integer,
-  "southMask" integer,
-  "northLabel" VARCHAR(255),
-  "southLabel" VARCHAR(255),
-  "timeMask" integer,
-  "timeLabel" VARCHAR(255),
-  "shadowSize" VARCHAR(32),
+  "spawn_location" varchar(255),
+  "north_mask" integer,
+  "south_mask" integer,
+  "north_label" VARCHAR(255),
+  "south_label" VARCHAR(255),
+  "time_mask" integer,
+  "time_label" VARCHAR(255),
+  "shadow_size" VARCHAR(32),
   "original" VARCHAR(255),
   "artist" VARCHAR(255),
-  "imgLocationAlt" VARCHAR(255)
+  "img_location_alt" VARCHAR(255)
 );
 
-CREATE TABLE "collectedItems" (
-  "userId" integer NOT NULL,
-  "collectableId" integer NOT NULL,
-  PRIMARY KEY ("userId", "collectableId")
+CREATE TABLE "collected_items" (
+  "user_id" integer NOT NULL,
+  "collectable_id" integer NOT NULL,
+  PRIMARY KEY ("user_id", "collectable_id")
 );
 
-ALTER TABLE "acUsers" ADD FOREIGN KEY ("groupId") REFERENCES "groups" ("id");
+ALTER TABLE "ac_users" ADD FOREIGN KEY ("group_id") REFERENCES "groups" ("id");
 
-ALTER TABLE "acUsers" ADD FOREIGN KEY ("roleId") REFERENCES "acRoles" ("id");
+ALTER TABLE "ac_users" ADD FOREIGN KEY ("role_id") REFERENCES "ac_roles" ("id");
 
-ALTER TABLE "collectables" ADD FOREIGN KEY ("typeId") REFERENCES "collectableTypes" ("id");
+ALTER TABLE "collectables" ADD FOREIGN KEY ("type_id") REFERENCES "collectable_types" ("id");
 
-ALTER TABLE "collectedItems" ADD FOREIGN KEY ("userId") REFERENCES "acUsers" ("id");
+ALTER TABLE "collected_items" ADD FOREIGN KEY ("user_id") REFERENCES "ac_users" ("id");
 
-ALTER TABLE "collectedItems" ADD FOREIGN KEY ("collectableId") REFERENCES "collectables" ("id");
+ALTER TABLE "collected_items" ADD FOREIGN KEY ("collectable_id") REFERENCES "collectables" ("id");

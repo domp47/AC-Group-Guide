@@ -3,16 +3,19 @@ use diesel::prelude::*;
 use diesel::pg::PgConnection;
 
 use crate::schema::collectables;
+use crate::schema::collected_items;
+use crate::constants::CollectableTypeEnum;
 
-//#[table_name = "collectables"]
+
 #[derive(Serialize, Deserialize, Queryable)]
+//#[table_name = "collectables"]
 #[serde(rename_all = "camelCase")]
 pub struct Collectable {
-    id: i32,
+    pub id: i32,
     pub display_name: String,
     pub img_location: String,
     pub type_id: i32,
-    price: i32,
+    pub price: i32,
     pub spawn_location: Option<String>,
     pub north_mask: Option<i32>,
     pub south_mask: Option<i32>,
@@ -27,7 +30,22 @@ pub struct Collectable {
 }
 
 impl Collectable {
-    pub fn read(connection: &PgConnection) -> Vec<Collectable> {
-        collectables::table.order(collectables::id.asc()).load::<Collectable>(connection).unwrap()
+    pub fn get_caught(collect_type: CollectableTypeEnum, user_id: i32, connection: &PgConnection) -> Vec<Collectable> {
+        let type_ = collect_type as i32;
+
+
+        crate::schema::collectables::dsl::collectables
+//            .inner_join(collected_items::table::)
+            .filter(collectables::id.eq(type_))
+            .load::<Collectable>(connection).expect("Error Getting Collectable.")
+
     }
+
+//    pub fn get_always_avail(collect_type: CollectableTypeEnum, user_id: i32) -> Vec<Collectable> {
+//        let possible_types = [CollectableTypeEnum::Art as u8, CollectableTypeEnum::Fossil as u8];
+//
+//        assert!(possible_types.contains(&(collect_type as u8)));
+//
+//
+//    }
 }

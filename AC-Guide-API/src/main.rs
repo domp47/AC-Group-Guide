@@ -11,20 +11,16 @@ extern crate r2d2_diesel;
 mod db;
 mod schema;
 mod collectable;
+mod constants;
 
 use rocket_contrib::json::Json;
 use rocket_contrib::json::JsonValue;
 use rocket_contrib::json;
 use dotenv;
 
-#[get("/<name>/<age>")]
-fn hello(name: String, age: u8) -> String {
-    format!("Hello, {} year old named {}!", age, name)
-}
-
 #[get("/")]
 fn get_collect(connection: db::Connection) -> Json<JsonValue> {
-    Json(json!(collectable::Collectable::read(&connection)))
+    Json(json!(collectable::Collectable::get_caught(constants::CollectableTypeEnum::Art, 1, &connection)))
 }
 
 fn main() {
@@ -33,7 +29,8 @@ fn main() {
 
     rocket::ignite()
         .manage(db::connect())
-        .mount("/hello", routes![hello])
         .mount("/collectables", routes![get_collect])
         .launch();
 }
+
+//TODO change the schema cuz a user can not be in a group but must be assigned a role to a group?? oops.
