@@ -10,8 +10,8 @@ use schema::collectedItems;
 //#[table_name = "collectedItems"]
 #[derive(Identifiable, Serialize, Deserialize, Associations, Queryable, Insertable)]
 #[serde(rename_all = "camelCase")]
-#[belongs_to(AcUser)]
-#[belongs_to(Collectable)]
+//#[belongs_to(AcUser)]
+//#[belongs_to(Collectable)]
 #[primary_key(userId, collectableId)]
 pub struct CollectedItem {
     pub user_id: i32,

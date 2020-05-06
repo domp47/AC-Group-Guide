@@ -23,13 +23,23 @@ fn get_collect(connection: db::Connection) -> Json<JsonValue> {
     Json(json!(collectable::Collectable::get_caught(constants::CollectableTypeEnum::Art, 1, &connection)))
 }
 
+#[get("/art")]
+fn get_missing_art(connection: db::Connection) -> Json<JsonValue> {
+    Json(json!(collectable::Collectable::get_always_avail(constants::CollectableTypeEnum::Art, 1, &connection)))
+}
+
+#[get("/timed")]
+fn get_timed(connection: db::Connection) -> Json<JsonValue> {
+    Json(json!(collectable::Collectable::get_timed_now(constants::CollectableTypeEnum::Bug, 1, 32, 16, true, &connection)))
+}
+
 fn main() {
     #[cfg(debug_assertions)]
     dotenv::dotenv().ok(); //Only loads .env file when compiled in debug mode.
 
     rocket::ignite()
         .manage(db::connect())
-        .mount("/collectables", routes![get_collect])
+        .mount("/collectables", routes![get_collect, get_missing_art, get_timed])
         .launch();
 }
 
