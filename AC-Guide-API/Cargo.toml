@@ -15,6 +15,7 @@ diesel = { version = "1.0.0", features = ["postgres"] }
 dotenv = "0.15.0"
 r2d2 = "*"
 r2d2-diesel = "*"
+base64 = "0.12.1"
 
 [dependencies.rocket_contrib]
 version = "0.4.4"

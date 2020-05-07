@@ -17,8 +17,7 @@ pub struct Group {
 #[derive(Serialize, Deserialize, Insertable)]
 #[serde(rename_all = "camelCase")]
 pub struct NewGroup {
-    name: String,
-    join_code: String
+    name: String
 }
 
 

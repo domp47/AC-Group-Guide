@@ -13,8 +13,5 @@ pub struct AcRole {
 }
 
 impl AcRole {
-    pub fn read(connection: &PgConnection) -> Vec<AcRole> {
-        acRoles::table.order(acRoles::id.asc()).load::<AcRole>(connection).unwrap()
-    }
 }
 

@@ -1,9 +1,8 @@
 CREATE TABLE "ac_users" (
-  "id" SERIAL PRIMARY KEY,
-  "google_id" varchar(28) NOT NULL,
+  "google_id" varchar(28) PRIMARY KEY,
   "display_name" varchar(255) NOT NULL,
   "group_id" integer,
-  "role_id" integer NOT NULL
+  "role_id" integer
 );
 
 CREATE TABLE "ac_roles" (
@@ -14,7 +13,7 @@ CREATE TABLE "ac_roles" (
 CREATE TABLE "groups" (
   "id" SERIAL PRIMARY KEY,
   "name" varchar(255) NOT NULL,
-  "join_code" varchar(8) NOT NULL
+  "join_code" varchar(10) NOT NULL UNIQUE
 );
 
 CREATE TABLE "collectable_types" (
