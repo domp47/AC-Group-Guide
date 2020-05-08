@@ -105,5 +105,3 @@ fn main() {
 //        .manage(db::connect())
 //        .launch();
 }
-
-//TODO change the schema cuz a user can not be in a group but must be assigned a role to a group?? oops.
