@@ -8,7 +8,7 @@ use crate::schema::collected_items;
 #[serde(rename_all = "camelCase")]
 #[primary_key(user_id, collectable_id)]
 pub struct CollectedItem {
-    pub user_id: i32,
+    pub user_id: String,
     pub collectable_id: i32,
 }
 
@@ -20,7 +20,7 @@ impl CollectedItem {
             .expect("Error creating new collected item");
     }
 
-    pub fn delete(u_id: i32, c_id: i32, connection: &PgConnection) -> bool {
+    pub fn delete(u_id: String, c_id: i32, connection: &PgConnection) -> bool {
         diesel::delete(collected_items::table.find((u_id, c_id))).execute(connection).is_ok()
     }
 

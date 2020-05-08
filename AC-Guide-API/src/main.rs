@@ -11,8 +11,11 @@ extern crate r2d2_diesel;
 mod auth;
 mod db;
 mod schema;
+
+mod ac_user;
 mod collectable;
 mod collected_item;
+
 mod constants;
 
 use rocket_contrib::json::Json;
@@ -90,10 +93,10 @@ struct TrackingResponse {
 
 // region Tracking
 
-//#[get("/<user_id>")]
-//fn get_tracking(user_id: i32, connection: db::Connection) -> Json<JsonValue> {
-//
-//}
+#[get("/")]
+fn get_tracking(connection: db::Connection, user: ac_user::AcUser) -> Json<JsonValue> {
+    Json(json!(user))
+}
 
 // endregion
 
@@ -101,7 +104,8 @@ fn main() {
     #[cfg(debug_assertions)]
     dotenv::dotenv().ok(); //Only loads .env file when compiled in debug mode.
 
-//    rocket::ignite()
-//        .manage(db::connect())
-//        .launch();
+    rocket::ignite()
+        .manage(db::connect())
+        .mount("/tracking", routes![get_tracking])
+        .launch();
 }

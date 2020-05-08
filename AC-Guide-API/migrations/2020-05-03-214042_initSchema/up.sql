@@ -41,7 +41,7 @@ CREATE TABLE "collectables" (
 );
 
 CREATE TABLE "collected_items" (
-  "user_id" integer NOT NULL,
+  "user_id" varchar(28) NOT NULL,
   "collectable_id" integer NOT NULL,
   PRIMARY KEY ("user_id", "collectable_id")
 );
@@ -52,6 +52,6 @@ ALTER TABLE "ac_users" ADD FOREIGN KEY ("role_id") REFERENCES "ac_roles" ("id");
 
 ALTER TABLE "collectables" ADD FOREIGN KEY ("type_id") REFERENCES "collectable_types" ("id");
 
-ALTER TABLE "collected_items" ADD FOREIGN KEY ("user_id") REFERENCES "ac_users" ("id");
+ALTER TABLE "collected_items" ADD FOREIGN KEY ("user_id") REFERENCES "ac_users" ("google_id");
 
 ALTER TABLE "collected_items" ADD FOREIGN KEY ("collectable_id") REFERENCES "collectables" ("id");

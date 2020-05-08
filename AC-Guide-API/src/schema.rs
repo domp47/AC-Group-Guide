@@ -6,12 +6,11 @@ table! {
 }
 
 table! {
-    ac_users (id) {
-        id -> Int4,
+    ac_users (google_id) {
         google_id -> Varchar,
         display_name -> Varchar,
         group_id -> Nullable<Int4>,
-        role_id -> Int4,
+        role_id -> Nullable<Int4>,
     }
 }
 
@@ -46,7 +45,7 @@ table! {
 
 table! {
     collected_items (user_id, collectable_id) {
-        user_id -> Int4,
+        user_id -> Varchar,
         collectable_id -> Int4,
     }
 }

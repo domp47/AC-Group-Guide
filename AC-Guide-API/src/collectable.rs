@@ -42,7 +42,7 @@ pub struct Collectable {
 
 impl Collectable {
 
-    pub fn get_caught(collect_type: CollectableTypeEnum, user_id: i32, connection: &PgConnection) -> Vec<Collectable> {
+    pub fn get_caught(collect_type: CollectableTypeEnum, user_id: String, connection: &PgConnection) -> Vec<Collectable> {
         let type_ = collect_type as i32;
 
         crate::schema::collectables::dsl::collectables
@@ -57,7 +57,7 @@ impl Collectable {
             .load(connection).expect("Error Getting Collectable.")
     }
 
-    pub fn get_always_avail(collect_type: CollectableTypeEnum, user_id: i32, connection: &PgConnection) -> Vec<Collectable> {
+    pub fn get_always_avail(collect_type: CollectableTypeEnum, user_id: String, connection: &PgConnection) -> Vec<Collectable> {
         let possible_types = [CollectableTypeEnum::Art as i32, CollectableTypeEnum::Fossil as i32];
         let type_ = collect_type as i32;
 
@@ -75,7 +75,7 @@ impl Collectable {
             .load(connection).expect("Error Getting Collectable.")
     }
 
-    pub fn get_timed_now(collect_type: CollectableTypeEnum, user_id: i32, month_mask: i32, time_mask: i32, hemisphere: bool, connection: &PgConnection) -> Vec<Collectable> {
+    pub fn get_timed_now(collect_type: CollectableTypeEnum, user_id: String, month_mask: i32, time_mask: i32, hemisphere: bool, connection: &PgConnection) -> Vec<Collectable> {
         let possible_types = [CollectableTypeEnum::Bug as i32, CollectableTypeEnum::Fish as i32];
         let type_ = collect_type as i32;
 
@@ -106,7 +106,7 @@ impl Collectable {
 
     }
 
-    pub fn get_timed_this_month(collect_type: CollectableTypeEnum, user_id: i32, month_mask: i32, time_mask: i32, hemisphere: bool, connection: &PgConnection) -> Vec<Collectable> {
+    pub fn get_timed_this_month(collect_type: CollectableTypeEnum, user_id: String, month_mask: i32, time_mask: i32, hemisphere: bool, connection: &PgConnection) -> Vec<Collectable> {
         let possible_types = [CollectableTypeEnum::Bug as i32, CollectableTypeEnum::Fish as i32];
         let type_ = collect_type as i32;
 
@@ -137,7 +137,7 @@ impl Collectable {
 
     }
 
-    pub fn get_timed_not_avail(collect_type: CollectableTypeEnum, user_id: i32, month_mask: i32, hemisphere: bool, connection: &PgConnection) -> Vec<Collectable> {
+    pub fn get_timed_not_avail(collect_type: CollectableTypeEnum, user_id: String, month_mask: i32, hemisphere: bool, connection: &PgConnection) -> Vec<Collectable> {
         let possible_types = [CollectableTypeEnum::Bug as i32, CollectableTypeEnum::Fish as i32];
         let type_ = collect_type as i32;
 
