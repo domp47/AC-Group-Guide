@@ -18,6 +18,7 @@ r2d2-diesel = "*"
 base64 = "0.12.1"
 reqwest = { version = "0.10.4", features = ["blocking", "json"] }
 openssl = "0.10.29"
+rand = "0.7.3"
 
 [dependencies.rocket_contrib]
 version = "0.4.4"

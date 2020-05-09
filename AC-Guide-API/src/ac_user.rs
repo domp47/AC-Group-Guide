@@ -3,8 +3,10 @@ use diesel::prelude::*;
 use diesel::pg::PgConnection;
 
 use crate::schema::ac_users;
+use crate::group::Group;
+use crate::constants::Roles;
 
-#[derive(Serialize, Deserialize, Queryable, Insertable, Identifiable)]
+#[derive(Serialize, Deserialize, Queryable, Insertable, Identifiable, AsChangeset)]
 #[serde(rename_all = "camelCase")]
 #[primary_key(google_id)]
 pub struct AcUser {
@@ -42,7 +44,29 @@ impl AcUser {
         self.google_id == "" && self.display_name == "" && self.group_id == None && self.role_id == None
     }
 
-    pub fn join_group(user_id: i32, code: String, connection: &PgConnection) -> () {
+    pub fn join_group(mut user: AcUser, code: String, connection: &PgConnection) -> String {
+        let group_res = Group::get_group_by_code(code.clone(), connection);
 
+        match group_res {
+            Ok(group) => {
+                user.group_id = Some(group.id);
+                user.role_id = Some(Roles::User as i32);
+
+                let result = diesel::update(ac_users::table.find(user.google_id.clone())).set(&user).execute(connection).is_ok();
+
+                if result {
+                    return "success".to_string()
+                }
+
+                return "Error Joining Group".to_string()
+            }
+            Err(err) => {
+                if err == 0 {
+                    return "No Group With Join Code Found".to_string()
+                }else {
+                    return "Error Getting Groups".to_string()
+                }
+            }
+        }
     }
 }

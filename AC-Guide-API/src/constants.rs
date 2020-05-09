@@ -4,3 +4,8 @@ pub enum CollectableTypeEnum {
     Fish = 3,
     Fossil = 4
 }
+
+pub enum Roles {
+    User = 1,
+    Admin = 2
+}

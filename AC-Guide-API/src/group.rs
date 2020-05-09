@@ -1,34 +1,36 @@
 use diesel;
 use diesel::prelude::*;
-use disel::pg::PgConnection;
+use diesel::pg::PgConnection;
 
-use schema::groups;
+use crate::schema::groups;
 
 #[table_name = "groups"]
-#[derive(Serialize, Deserialize, Queryable)]
+#[derive(Serialize, Deserialize, Queryable, AsChangeset)]
 #[serde(rename_all = "camelCase")]
 pub struct Group {
-    id: i32,
-    name: String,
-    join_code: String
+    pub id: i32,
+    pub name: String,
+    pub join_code: String
 }
 
 #[table_name = "groups"]
-#[derive(Serialize, Deserialize, Insertable)]
+#[derive(Serialize, Deserialize, Insertable, Queryable)]
 #[serde(rename_all = "camelCase")]
 pub struct NewGroup {
-    name: String
+    pub name: String,
+    pub join_code: String
 }
 
 
 impl Group {
+    //TODO return result with group
     pub fn create(new_group: NewGroup, connection: &PgConnection) -> Group {
         diesel::insert_into(groups::table)
             .values(&new_group)
             .execute(connection)
             .expect("Error creating new group");
 
-        groups::table.order(Group::id.desc()).first(connection).unwrap()
+        groups::table.order(groups::id.desc()).first(connection).unwrap()
     }
 
     pub fn read(connection: &PgConnection) -> Vec<Group> {
@@ -41,5 +43,25 @@ impl Group {
 
     pub fn delete(id: i32, connection: &PgConnection) -> bool {
         diesel::delete(groups::table.find(id)).execute(connection).is_ok()
+    }
+
+    pub fn get_group_by_code(code: String, connection: &PgConnection) -> Result<Group, i32> {
+
+        let groups_res: Result<std::vec::Vec<_>, diesel::result::Error> = crate::schema::groups::dsl::groups
+            .filter(groups::join_code.eq(code))
+            .load(connection);
+
+        if groups_res.is_err() {
+            return Err(-1)
+        }
+
+        let mut groups = groups_res.unwrap();
+
+        if groups.len() == 1 {
+            let mut group = groups.drain(0..1);
+            return Ok(group.next().unwrap())
+        }else{
+            return Err(0)
+        }
     }
 }
