@@ -7,5 +7,6 @@ pub enum CollectableTypeEnum {
 
 pub enum Roles {
     User = 1,
-    Admin = 2
+    Admin = 2,
+    Owner = 3
 }

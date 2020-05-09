@@ -33,16 +33,31 @@ impl Group {
         groups::table.order(groups::id.desc()).first(connection).unwrap()
     }
 
-    pub fn read(connection: &PgConnection) -> Vec<Group> {
-        groups::table.order(groups::id.asc()).load::<Group>(connection).unwrap()
-    }
-
     pub fn update(id: i32, group: Group, connection: &PgConnection) -> bool {
         diesel::update(groups::table.find(id)).set(&group).execute(connection).is_ok()
     }
 
     pub fn delete(id: i32, connection: &PgConnection) -> bool {
         diesel::delete(groups::table.find(id)).execute(connection).is_ok()
+    }
+
+    pub fn get_group_by_id(id: i32, connection: &PgConnection) -> Result<Group, i32> {
+        let groups_res: Result<std::vec::Vec<_>, diesel::result::Error> = crate::schema::groups::dsl::groups
+            .filter(groups::id.eq(id))
+            .load(connection);
+
+        if groups_res.is_err() {
+            return Err(-1)
+        }
+
+        let mut groups = groups_res.unwrap();
+
+        if groups.len() == 1 {
+            let mut group = groups.drain(0..1);
+            return Ok(group.next().unwrap())
+        }else{
+            return Err(0)
+        }
     }
 
     pub fn get_group_by_code(code: String, connection: &PgConnection) -> Result<Group, i32> {

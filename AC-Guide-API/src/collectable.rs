@@ -167,4 +167,19 @@ impl Collectable {
             .load(connection).expect("Error Getting Collectable.")
 
     }
+
+    pub fn get_missing(collect_type: CollectableTypeEnum, user_id: String, connection: &PgConnection) -> Vec<Collectable> {
+        let type_ = collect_type as i32;
+
+        return crate::schema::collectables::dsl::collectables
+            .left_join(crate::schema::collected_items::dsl::collected_items.on(collected_items::collectable_id.eq(collectables::id).and(collected_items::user_id.eq(user_id))))
+            .filter(collected_items::collectable_id.is_null().and(collectables::type_id.eq(type_)))
+            .select((collectables::id, collectables::display_name, collectables::img_location,
+                     collectables::type_id, collectables::price, collectables::spawn_location,
+                     collectables::north_mask, collectables::south_mask, collectables::north_label,
+                     collectables::south_label, collectables::time_mask, collectables::time_label,
+                     collectables::shadow_size, collectables::original, collectables::artist, collectables::img_location_alt))
+            .order(collectables::display_name.asc())
+            .load(connection).expect("Error Getting Collectable.");
+    }
 }

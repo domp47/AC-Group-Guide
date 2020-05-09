@@ -134,6 +134,15 @@ struct HomeResponse {
     missing_fossils: Vec<Fossil>
 }
 
+#[derive(Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct AdminResponse {
+    users: Vec<ac_user::AcUser>,
+    admins: Vec<ac_user::AcUser>,
+
+    join_code: String
+}
+
 // endregion
 
 // region ConversionFunction
@@ -267,20 +276,7 @@ fn uncatch_item(id: i32, connection: db::Connection, user: ac_user::AcUser) -> J
 
 // region Group
 
-#[post("/join", data = "<info>")]
-fn group_join(info: Json<JoinGroup>, connection: db::Connection, user: ac_user::AcUser) -> Json<JsonValue> {
-    let resp = RespMessage { message: ac_user::AcUser::join_group(user, info.code.clone(), &connection) };
-
-    Json(json!(resp))
-}
-
-#[post("/create", data = "<info>")]
-fn group_create(info: Json<CreateGroup>, connection: db::Connection, user: ac_user::AcUser) -> Json<JsonValue> {
-
-    if user.group_id.is_some() {
-        return Json(json!(RespMessage { message: "Error: Already in group".to_string()}))
-    }
-
+fn generate_code(connection: &db::Connection) -> String {
     let mut is_unique = false;
     let mut join_code: String = "".to_string();
 
@@ -295,15 +291,223 @@ fn group_create(info: Json<CreateGroup>, connection: db::Connection, user: ac_us
             .take(10)
             .collect();
 
-        let resp = group::Group::get_group_by_code(join_code.clone(), &connection);
+        let resp = group::Group::get_group_by_code(join_code.clone(), connection);
         is_unique = resp.is_err();
     }
 
-    let new_group = group::NewGroup { name: info.name.clone(), join_code };
+    join_code
+}
 
-    group::Group::create(new_group, &connection);
+#[post("/join", data = "<info>")]
+fn group_join(info: Json<JoinGroup>, connection: db::Connection, user: ac_user::AcUser) -> Json<JsonValue> {
+    let resp = RespMessage { message: ac_user::AcUser::join_group(user, info.code.clone(), &connection) };
+
+    Json(json!(resp))
+}
+
+#[delete("/")]
+fn group_leave(connection: db::Connection, user: ac_user::AcUser) -> Json<JsonValue> {
+    let resp = RespMessage { message: ac_user::AcUser::leave_group(user, &connection) };
+
+    Json(json!(resp))
+}
+
+#[post("/create", data = "<info>")]
+fn group_create(info: Json<CreateGroup>, connection: db::Connection, user: ac_user::AcUser) -> Json<JsonValue> {
+
+    if user.group_id.is_some() {
+        return Json(json!(RespMessage { message: "Error: Already in group".to_string()}))
+    }
+
+    let join_code = generate_code(&connection);
+
+    let new_group = group::NewGroup { name: info.name.clone(), join_code };
+    let created_group = group::Group::create(new_group, &connection);
+
+    //TODO when this all gets change to status responses make sure each step is successful
+    let uid = user.google_id.clone();
+    ac_user::AcUser::join_group(user, created_group.join_code, &connection);
+
+    let joined_user = ac_user::AcUser::get_user(uid, &connection);
+    ac_user::AcUser::change_role(joined_user, constants::Roles::Owner, &connection);
 
     let resp = RespMessage { message: "success".to_string() };
+    Json(json!(resp))
+}
+
+// endregion
+
+// region User
+
+#[get("/")]
+fn get_user(_connection: db::Connection, user: ac_user::AcUser) -> Json<JsonValue> {
+    Json(json!(user))
+}
+
+// endregion
+
+// region Admin
+
+#[post("/", data = "<other>")]
+fn add_admin(other: Json<ac_user::AcUser>, connection: db::Connection, user: ac_user::AcUser) -> Json<JsonValue> {
+    let other_user = ac_user::AcUser::get_user(other.google_id.clone(), &connection);
+
+    if user.group_id.is_none() || other_user.group_id.is_none() || user.group_id.unwrap() != other_user.group_id.unwrap() {
+        return Json(json!(RespMessage { message: "Cannot make admin because either the user is not in a group or correct group.".to_string()}))
+    }
+
+    if user.role_id.is_none() || user.role_id.unwrap() < constants::Roles::Admin as i32 {
+        return Json(json!(RespMessage { message: "Insufficient access.".to_string()}))
+    }
+
+    let resp = RespMessage { message: ac_user::AcUser::change_role(other_user, constants::Roles::Admin, &connection) };
+    Json(json!(resp))
+}
+
+#[delete("/", data = "<other>")]
+fn remove_member(other: Json<ac_user::AcUser>, connection: db::Connection, user: ac_user::AcUser) -> Json<JsonValue> {
+    let other_user = ac_user::AcUser::get_user(other.google_id.clone(), &connection);
+
+    if user.group_id.is_none() || other_user.group_id.is_none() || user.group_id.unwrap() != other_user.group_id.unwrap() {
+        return Json(json!(RespMessage { message: "Cannot remove user because either the user is not in a group or correct group.".to_string()}))
+    }
+
+    if user.role_id.is_none() || user.role_id.unwrap() < constants::Roles::Admin as i32 {
+        return Json(json!(RespMessage { message: "Insufficient access.".to_string()}))
+    }
+
+    if user.role_id.unwrap() == constants::Roles::Admin as i32 && (other_user.role_id.is_some() && other_user.role_id.unwrap() == constants::Roles::Admin as i32) {
+        return Json(json!(RespMessage { message: "Only an Owner can Remove an Admin.".to_string()}))
+    }
+
+    let resp = RespMessage { message: ac_user::AcUser::leave_group(other_user, &connection) };
+    Json(json!(resp))
+}
+
+#[delete("/admin", data = "<other>")]
+fn remove_admin(other: Json<ac_user::AcUser>, connection: db::Connection, user: ac_user::AcUser) -> Json<JsonValue> {
+    let other_user = ac_user::AcUser::get_user(other.google_id.clone(), &connection);
+
+    if user.group_id.is_none() || other_user.group_id.is_none() || user.group_id.unwrap() != other_user.group_id.unwrap() {
+        return Json(json!(RespMessage { message: "Cannot make admin because either the user is not in a group or correct group.".to_string()}))
+    }
+
+    if user.role_id.is_none() || user.role_id.unwrap() < constants::Roles::Owner as i32 {
+        return Json(json!(RespMessage { message: "Insufficient access.".to_string()}))
+    }
+
+    let resp = RespMessage { message: ac_user::AcUser::change_role(other_user, constants::Roles::User, &connection) };
+    Json(json!(resp))
+}
+
+#[patch("/code")]
+fn regenerate_code(connection: db::Connection, user: ac_user::AcUser) -> Json<JsonValue> {
+
+    if user.group_id.is_none(){
+        return Json(json!(RespMessage { message: "Cannot regenerate code because user is not in a group.".to_string()}))
+    }
+
+    if user.role_id.is_none() || user.role_id.unwrap() < constants::Roles::Admin as i32 {
+        return Json(json!(RespMessage { message: "Insufficient access.".to_string()}))
+    }
+
+    let group_res = group::Group::get_group_by_id(user.group_id.unwrap(), &connection);
+
+    //TODO make those results return an enum
+    if group_res.is_err() {
+        return Json(json!(RespMessage { message: "Error getting group.".to_string()}))
+    }
+
+    let mut group = group_res.unwrap();
+
+    group.join_code = generate_code(&connection);
+
+    let res = group::Group::update(group.id, group, &connection);
+
+    if res {
+        return Json(json!(RespMessage { message: "success".to_string() }))
+    }
+
+    Json(json!(RespMessage { message: "Error Regenerating Code".to_string() }))
+}
+
+#[delete("/group")]
+fn delete_group(connection: db::Connection, user: ac_user::AcUser) -> Json<JsonValue> {
+    if user.group_id.is_none(){
+        return Json(json!(RespMessage { message: "Cannot delete group because user is not in a group.".to_string()}))
+    }
+
+    if user.role_id.is_none() || user.role_id.unwrap() < constants::Roles::Owner as i32 {
+        return Json(json!(RespMessage { message: "Insufficient access.".to_string()}))
+    }
+
+    let group_id_to_delete = user.group_id.unwrap();
+    let all_users = ac_user::AcUser::get_users_by_group(group_id_to_delete, &connection);
+
+    for user_to_modify in all_users.iter().cloned() {
+        ac_user::AcUser::leave_group(user_to_modify, &connection);
+    }
+
+    let res = group::Group::delete(group_id_to_delete, &connection);
+
+    if res {
+        return Json(json!(RespMessage { message: "success".to_string() }))
+    }
+
+    Json(json!(RespMessage { message: "Error Deleting Group".to_string() }))
+}
+
+#[get("/")]
+fn get_admin_data(connection: db::Connection, user: ac_user::AcUser) -> Json<JsonValue> {
+    if user.group_id.is_none(){
+        return Json(json!(RespMessage { message: "Cannot get group because user is not in a group.".to_string()}))
+    }
+
+    let group_res = group::Group::get_group_by_id(user.group_id.unwrap(), &connection);
+    if group_res.is_err() {
+        return Json(json!(RespMessage { message: "Cannot find group.".to_string()}))
+    }
+
+    let response = AdminResponse {
+        users: ac_user::AcUser::get_regular_users_by_group(user.group_id.unwrap(), &connection),
+        admins: ac_user::AcUser::get_admin_users_by_group(user.group_id.unwrap(), &connection),
+
+        join_code: group_res.unwrap().join_code
+    };
+
+    Json(json!(response))
+}
+
+// endregion
+
+// region Home
+
+#[get("/")]
+fn get_home(connection: db::Connection, user: ac_user::AcUser) -> Json<JsonValue> {
+    if user.group_id.is_none(){
+        return Json(json!(RespMessage { message: "Cannot get home because user is not in a group.".to_string()}))
+    }
+
+    let all_users = ac_user::AcUser::get_users_by_group(user.group_id.unwrap(), &connection);
+
+    let mut resp: Vec<HomeResponse> = Vec::new();
+
+    for user_to_get in all_users.iter().cloned() {
+        if user_to_get.google_id.clone() == user.google_id.clone() {
+            continue;
+        }
+
+        let home_resp = HomeResponse {
+            display_name: user_to_get.display_name.clone(),
+
+            missing_art: get_art_list(collectable::Collectable::get_missing(constants::CollectableTypeEnum::Art, user_to_get.google_id.clone(), &connection)),
+            missing_bugs: get_bug_list(collectable::Collectable::get_missing(constants::CollectableTypeEnum::Bug, user_to_get.google_id.clone(), &connection)),
+            missing_fish: get_fish_list(collectable::Collectable::get_missing(constants::CollectableTypeEnum::Fish, user_to_get.google_id.clone(), &connection)),
+            missing_fossils: get_fossil_list(collectable::Collectable::get_missing(constants::CollectableTypeEnum::Fossil, user_to_get.google_id.clone(), &connection))
+        };
+
+        resp.push(home_resp);
+    }
 
     Json(json!(resp))
 }
@@ -317,6 +521,9 @@ fn main() {
     rocket::ignite()
         .manage(db::connect())
         .mount("/tracking", routes![get_tracking, catch_item, uncatch_item])
-        .mount("/groups", routes![group_join, group_create])
+        .mount("/groups", routes![group_join, group_create, group_leave])
+        .mount("/user", routes![get_user])
+        .mount("/admin", routes![add_admin, remove_member, remove_admin, regenerate_code, delete_group, get_admin_data])
+        .mount("/home", routes![get_home])
         .launch();
 }

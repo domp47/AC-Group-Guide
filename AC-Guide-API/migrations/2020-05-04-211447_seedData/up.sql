@@ -4,6 +4,8 @@ INSERT INTO "ac_roles" ("id", "label")
 
 INSERT INTO "ac_roles" ("id", "label")
     VALUES (2, 'Admin');
+INSERT INTO "ac_roles" ("id", "label")
+    VALUES (3, 'Owner');
 
 
 /** Seeding Collectable Types  **/

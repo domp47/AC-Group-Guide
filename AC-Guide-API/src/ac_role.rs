@@ -1,10 +1,9 @@
 use diesel;
 use diesel::prelude::*;
-use disel::pg::PgConnection;
+use diesel::pg::PgConnection;
 
-use schema::acRoles;
+use schema::ac_roles;
 
-#[table_name = "acRoles"]
 #[derive(Serialize, Deserialize, Queryable)]
 #[serde(rename_all = "camelCase")]
 pub struct AcRole {

@@ -16,6 +16,17 @@ pub struct AcUser {
     pub role_id: Option<i32>
 }
 
+impl Clone for AcUser {
+    fn clone(&self) -> Self {
+        AcUser {
+            google_id: self.google_id.clone(),
+            display_name: self.display_name.clone(),
+            group_id: self.group_id.clone(),
+            role_id: self.role_id.clone()
+        }
+    }
+}
+
 impl AcUser {
     pub fn create(new_user: AcUser, connection: &PgConnection) -> AcUser {
         diesel::insert_into(ac_users::table)
@@ -40,8 +51,58 @@ impl AcUser {
         }
     }
 
+    pub fn get_admin_users_by_group(group_id: i32, connection: &PgConnection) -> Vec<AcUser> {
+        let users: Vec<AcUser> = crate::schema::ac_users::dsl::ac_users
+            .filter(ac_users::group_id.eq(group_id).and(ac_users::role_id.ge(Roles::Admin as i32)))
+            .load(connection).expect("Error Getting Users.");
+
+        return users
+    }
+
+    pub fn get_regular_users_by_group(group_id: i32, connection: &PgConnection) -> Vec<AcUser> {
+        let users: Vec<AcUser> = crate::schema::ac_users::dsl::ac_users
+            .filter(ac_users::group_id.eq(group_id).and(ac_users::role_id.eq(Roles::User as i32)))
+            .load(connection).expect("Error Getting Users.");
+
+        return users
+    }
+
+    pub fn get_users_by_group(group_id: i32, connection: &PgConnection) -> Vec<AcUser> {
+        let users: Vec<AcUser> = crate::schema::ac_users::dsl::ac_users
+            .filter(ac_users::group_id.eq(group_id))
+            .load(connection).expect("Error Getting Users.");
+
+        return users
+    }
+
     pub fn is_default(&self) -> bool {
         self.google_id == "" && self.display_name == "" && self.group_id == None && self.role_id == None
+    }
+
+    pub fn leave_group(mut user: AcUser, connection: &PgConnection) -> String {
+        user.group_id = None;
+        user.role_id = None;
+
+        let result = diesel::update(ac_users::table.find(user.google_id.clone())).set(&user).execute(connection).is_ok();
+
+        if result {
+            return "success".to_string()
+        }
+
+        return "Error Leaving Group".to_string()
+    }
+
+    pub fn change_role(mut user: AcUser, role: Roles, connection: &PgConnection) -> String {
+        user.role_id = Some(role as i32);
+
+
+        let result = diesel::update(ac_users::table.find(user.google_id.clone())).set(&user).execute(connection).is_ok();
+
+        if result {
+            return "success".to_string()
+        }
+
+        return "Error Joining Group".to_string()
     }
 
     pub fn join_group(mut user: AcUser, code: String, connection: &PgConnection) -> String {
