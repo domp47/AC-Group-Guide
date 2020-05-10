@@ -35,7 +35,7 @@ impl AcUser {
         match diesel::insert_into(ac_users::table)
             .values(&new_user)
             .execute(connection) {
-            Ok(v) => {
+            Ok(_v) => {
                 return AcUser::get_user(new_user.google_id, connection)
             }
             Err(err) => {
@@ -47,7 +47,7 @@ impl AcUser {
 
     pub fn get_user(google_id: String, connection: &PgConnection) -> Result<AcUser, ApiResponder> {
 
-        let mut users_res= crate::schema::ac_users::dsl::ac_users
+        let users_res= crate::schema::ac_users::dsl::ac_users
             .filter(ac_users::google_id.eq(google_id))
             .load(connection);
 

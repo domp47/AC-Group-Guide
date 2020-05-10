@@ -328,7 +328,7 @@ fn group_create(info: Json<CreateGroup>, connection: db::Connection, user: ac_us
     let created_group = group::Group::create(new_group, &connection)?;
 
     let uid = user.google_id.clone();
-    ac_user::AcUser::join_group(user, created_group.join_code, &connection)?;
+    ac_user::AcUser::join_group(user, created_group.join_code.clone(), &connection)?;
 
     let joined_user = ac_user::AcUser::get_user(uid, &connection)?;
     ac_user::AcUser::change_role(joined_user, constants::Roles::Owner, &connection)?;

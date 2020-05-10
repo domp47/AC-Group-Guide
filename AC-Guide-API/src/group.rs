@@ -32,7 +32,7 @@ impl Group {
             .execute(connection);
 
         match result {
-            Ok(v) => {
+            Ok(_v) => {
                 match groups::table.order(groups::id.desc()).first(connection) {
                     Ok(v) => {
                         return Ok(v)
@@ -50,7 +50,7 @@ impl Group {
 
     pub fn update(id: i32, group: Group, connection: &PgConnection) -> Result< (), ApiResponder> {
         match diesel::update(groups::table.find(id)).set(&group).execute(connection) {
-            Ok(v) => {
+            Ok(_v) => {
                 return Ok(())
             }
             Err(err) => {
@@ -61,7 +61,7 @@ impl Group {
 
     pub fn delete(id: i32, connection: &PgConnection) -> Result< (), ApiResponder> {
         match diesel::delete(groups::table.find(id)).execute(connection) {
-            Ok(v) => {
+            Ok(_v) => {
                 return Ok(())
             }
             Err(err) => {

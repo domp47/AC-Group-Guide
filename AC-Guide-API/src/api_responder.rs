@@ -1,14 +1,10 @@
 use std::io::Cursor;
 
 use rocket::request::Request;
-use rocket::response::{self, Response, Responder};
+use rocket::response::{Response, Responder};
 use rocket::http::ContentType;
 use rocket::http::Status;
 
-use rocket_contrib::json::Json;
-use rocket_contrib::json;
-
-use serde::{Deserialize, Serialize};
 
 #[derive(Debug)]
 pub struct ApiResponder {
@@ -29,7 +25,7 @@ impl RespBody {
 }
 
 impl<'a> Responder<'a> for ApiResponder {
-    fn respond_to(self, request: &Request) -> Result<Response<'a>, Status> {
+    fn respond_to(self, _request: &Request) -> Result<Response<'a>, Status> {
 
         let resp_body = serde_json::to_string(&RespBody::new(&self)).unwrap_or("".to_string());
 

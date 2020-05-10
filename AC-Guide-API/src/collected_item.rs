@@ -20,7 +20,7 @@ impl CollectedItem {
         match diesel::insert_into(collected_items::dsl::collected_items)
             .values(&c_i)
             .execute(connection) {
-            Ok(v) => {
+            Ok(_v) => {
                 return Ok(())
             }
             Err(err) => {
@@ -32,7 +32,7 @@ impl CollectedItem {
 
     pub fn delete(u_id: String, c_id: i32, connection: &PgConnection) -> Result<(), ApiResponder> {
         match diesel::delete(collected_items::table.find((u_id, c_id))).execute(connection) {
-            Ok(v) => {
+            Ok(_v) => {
                 return Ok(())
             }
             Err(err) => {
