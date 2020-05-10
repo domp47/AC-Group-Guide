@@ -1,8 +1,11 @@
 use diesel;
 use diesel::prelude::*;
-use disel::pg::PgConnection;
+use diesel::pg::PgConnection;
 
-use schema::collectableTypes;
+use schema::collectable_types;
+
+use crate::api_responder::ApiResponder;
+use rocket::http::Status;
 
 #[table_name = "collectableTypes"]
 #[derive(Serialize, Deserialize, Queryable)]
@@ -14,8 +17,5 @@ pub struct CollectableType {
 }
 
 impl CollectableType {
-    pub fn read(connection: &PgConnection) -> Vec<CollectableType> {
-        acRoles::table.order(acRoles::id.asc()).load::<AcRole>(connection).unwrap()
-    }
 }
 

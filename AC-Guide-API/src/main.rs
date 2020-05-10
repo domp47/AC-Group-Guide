@@ -11,6 +11,7 @@ extern crate r2d2_diesel;
 mod auth;
 mod db;
 mod schema;
+mod api_responder;
 
 mod ac_user;
 mod collectable;
@@ -22,6 +23,8 @@ mod constants;
 use rocket_contrib::json::Json;
 use rocket_contrib::json::JsonValue;
 use rocket_contrib::json;
+use rocket::http::Status;
+use api_responder::ApiResponder;
 use dotenv;
 
 // region AcceptModels
@@ -222,54 +225,54 @@ fn get_fossil_list(items: Vec<collectable::Collectable>) -> Vec<Fossil> {
  *    Hemisphere: true: north, false: south
  **/
 #[post("/get", data = "<info>")]
-fn get_tracking(info: Json<GetTracking>, connection: db::Connection, user: ac_user::AcUser) -> Json<JsonValue> {
+fn get_tracking(info: Json<GetTracking>, connection: db::Connection, user: ac_user::AcUser) -> Result<Json<JsonValue>, ApiResponder>  {
     let month = info.month;
     let hour = info.hour;
 
     if month < 1 || month > 12 {
-        return Json(json!(RespMessage { message: "Error: Invalid Month. Must be between 1-12".to_string() }))
+        return Err(ApiResponder { error: Status::BadRequest, message: "Error: Invalid Month. Must be between 1-12".to_string() })
     }
     if hour < 0 || hour > 23 {
-        return Json(json!(RespMessage { message: "Error: Invalid Hour. Must be between 0-23".to_string() }))
+        return Err(ApiResponder { error: Status::BadRequest, message: "Error: Invalid Hour. Must be between 0-23".to_string() })
     }
 
     let m_mask = 1 << (12 - month);
     let h_mask = 1 << (23 - hour);
 
     let resp = TrackingResponse {
-        missing_art: get_art_list(collectable::Collectable::get_always_avail(constants::CollectableTypeEnum::Art, user.google_id.clone(), &connection)),
-        acquired_art: get_art_list(collectable::Collectable::get_caught(constants::CollectableTypeEnum::Art, user.google_id.clone(), &connection)),
+        missing_art: get_art_list(collectable::Collectable::get_always_avail(constants::CollectableTypeEnum::Art, user.google_id.clone(), &connection)?),
+        acquired_art: get_art_list(collectable::Collectable::get_caught(constants::CollectableTypeEnum::Art, user.google_id.clone(), &connection)?),
 
-        avail_now_bugs: get_bug_list(collectable::Collectable::get_timed_now(constants::CollectableTypeEnum::Bug, user.google_id.clone(), m_mask, h_mask, info.hemisphere, &connection )),
-        avail_later_bugs: get_bug_list(collectable::Collectable::get_timed_this_month(constants::CollectableTypeEnum::Bug, user.google_id.clone(), m_mask, h_mask, info.hemisphere, &connection )),
-        not_avail_bugs: get_bug_list(collectable::Collectable::get_timed_not_avail(constants::CollectableTypeEnum::Bug, user.google_id.clone(), m_mask, info.hemisphere, &connection )),
-        caught_bugs: get_bug_list(collectable::Collectable::get_caught(constants::CollectableTypeEnum::Bug, user.google_id.clone(), &connection)),
+        avail_now_bugs: get_bug_list(collectable::Collectable::get_timed_now(constants::CollectableTypeEnum::Bug, user.google_id.clone(), m_mask, h_mask, info.hemisphere, &connection )?),
+        avail_later_bugs: get_bug_list(collectable::Collectable::get_timed_this_month(constants::CollectableTypeEnum::Bug, user.google_id.clone(), m_mask, h_mask, info.hemisphere, &connection )?),
+        not_avail_bugs: get_bug_list(collectable::Collectable::get_timed_not_avail(constants::CollectableTypeEnum::Bug, user.google_id.clone(), m_mask, info.hemisphere, &connection )?),
+        caught_bugs: get_bug_list(collectable::Collectable::get_caught(constants::CollectableTypeEnum::Bug, user.google_id.clone(), &connection)?),
 
-        avail_now_fish: get_fish_list(collectable::Collectable::get_timed_now(constants::CollectableTypeEnum::Fish, user.google_id.clone(), m_mask, h_mask, info.hemisphere, &connection )),
-        avail_later_fish: get_fish_list(collectable::Collectable::get_timed_this_month(constants::CollectableTypeEnum::Fish, user.google_id.clone(), m_mask, h_mask, info.hemisphere, &connection )),
-        not_avail_fish: get_fish_list(collectable::Collectable::get_timed_not_avail(constants::CollectableTypeEnum::Fish, user.google_id.clone(), m_mask, info.hemisphere, &connection )),
-        caught_fish: get_fish_list(collectable::Collectable::get_caught(constants::CollectableTypeEnum::Fish, user.google_id.clone(), &connection)),
+        avail_now_fish: get_fish_list(collectable::Collectable::get_timed_now(constants::CollectableTypeEnum::Fish, user.google_id.clone(), m_mask, h_mask, info.hemisphere, &connection )?),
+        avail_later_fish: get_fish_list(collectable::Collectable::get_timed_this_month(constants::CollectableTypeEnum::Fish, user.google_id.clone(), m_mask, h_mask, info.hemisphere, &connection )?),
+        not_avail_fish: get_fish_list(collectable::Collectable::get_timed_not_avail(constants::CollectableTypeEnum::Fish, user.google_id.clone(), m_mask, info.hemisphere, &connection )?),
+        caught_fish: get_fish_list(collectable::Collectable::get_caught(constants::CollectableTypeEnum::Fish, user.google_id.clone(), &connection)?),
 
-        missing_fossils: get_fossil_list(collectable::Collectable::get_always_avail(constants::CollectableTypeEnum::Fossil, user.google_id.clone(), &connection)),
-        acquired_fossils: get_fossil_list(collectable::Collectable::get_caught(constants::CollectableTypeEnum::Fossil, user.google_id.clone(), &connection))
+        missing_fossils: get_fossil_list(collectable::Collectable::get_always_avail(constants::CollectableTypeEnum::Fossil, user.google_id.clone(), &connection)?),
+        acquired_fossils: get_fossil_list(collectable::Collectable::get_caught(constants::CollectableTypeEnum::Fossil, user.google_id.clone(), &connection)?)
     };
 
-    Json(json!(resp))
+    Ok(Json(json!(resp)))
 }
 
 #[put("/<id>")]
-fn catch_item(id: i32, connection: db::Connection, user: ac_user::AcUser) -> Json<JsonValue> {
+fn catch_item(id: i32, connection: db::Connection, user: ac_user::AcUser) -> Result<Json<JsonValue>, ApiResponder> {
     let item = collected_item::CollectedItem { user_id: user.google_id, collectable_id: id };
-    collected_item::CollectedItem::create(item, &connection);
+    collected_item::CollectedItem::create(item, &connection)?;
 
-    Json(json!(RespMessage { message: "ok".to_string()}))
+    Ok(Json(json!(RespMessage { message: "ok".to_string()})))
 }
 
 #[delete("/<id>")]
-fn uncatch_item(id: i32, connection: db::Connection, user: ac_user::AcUser) -> Json<JsonValue> {
-    collected_item::CollectedItem::delete(user.google_id, id, &connection);
+fn uncatch_item(id: i32, connection: db::Connection, user: ac_user::AcUser) -> Result<Json<JsonValue>, ApiResponder> {
+    collected_item::CollectedItem::delete(user.google_id, id, &connection)?;
 
-    Json(json!(RespMessage { message: "ok".to_string()}))
+    Ok(Json(json!(RespMessage { message: "ok".to_string()})))
 }
 
 // endregion
@@ -299,40 +302,38 @@ fn generate_code(connection: &db::Connection) -> String {
 }
 
 #[post("/join", data = "<info>")]
-fn group_join(info: Json<JoinGroup>, connection: db::Connection, user: ac_user::AcUser) -> Json<JsonValue> {
-    let resp = RespMessage { message: ac_user::AcUser::join_group(user, info.code.clone(), &connection) };
+fn group_join(info: Json<JoinGroup>, connection: db::Connection, user: ac_user::AcUser) -> Result<Json<JsonValue>, ApiResponder> {
+    ac_user::AcUser::join_group(user, info.code.clone(), &connection)?;
 
-    Json(json!(resp))
+    Ok(Json(json!({})))
 }
 
 #[delete("/")]
-fn group_leave(connection: db::Connection, user: ac_user::AcUser) -> Json<JsonValue> {
-    let resp = RespMessage { message: ac_user::AcUser::leave_group(user, &connection) };
+fn group_leave(connection: db::Connection, user: ac_user::AcUser) -> Result<Json<JsonValue>, ApiResponder> {
+    ac_user::AcUser::leave_group(user, &connection)?;
 
-    Json(json!(resp))
+    Ok(Json(json!({})))
 }
 
 #[post("/create", data = "<info>")]
-fn group_create(info: Json<CreateGroup>, connection: db::Connection, user: ac_user::AcUser) -> Json<JsonValue> {
+fn group_create(info: Json<CreateGroup>, connection: db::Connection, user: ac_user::AcUser) -> Result<Json<JsonValue>, ApiResponder> {
 
     if user.group_id.is_some() {
-        return Json(json!(RespMessage { message: "Error: Already in group".to_string()}))
+        return Err(ApiResponder {error: Status::Conflict, message: "User is already in a group.".to_string()})
     }
 
     let join_code = generate_code(&connection);
 
     let new_group = group::NewGroup { name: info.name.clone(), join_code };
-    let created_group = group::Group::create(new_group, &connection);
+    let created_group = group::Group::create(new_group, &connection)?;
 
-    //TODO when this all gets change to status responses make sure each step is successful
     let uid = user.google_id.clone();
-    ac_user::AcUser::join_group(user, created_group.join_code, &connection);
+    ac_user::AcUser::join_group(user, created_group.join_code, &connection)?;
 
-    let joined_user = ac_user::AcUser::get_user(uid, &connection);
-    ac_user::AcUser::change_role(joined_user, constants::Roles::Owner, &connection);
+    let joined_user = ac_user::AcUser::get_user(uid, &connection)?;
+    ac_user::AcUser::change_role(joined_user, constants::Roles::Owner, &connection)?;
 
-    let resp = RespMessage { message: "success".to_string() };
-    Json(json!(resp))
+    Ok(Json(json!(created_group)))
 }
 
 // endregion
@@ -340,8 +341,8 @@ fn group_create(info: Json<CreateGroup>, connection: db::Connection, user: ac_us
 // region User
 
 #[get("/")]
-fn get_user(_connection: db::Connection, user: ac_user::AcUser) -> Json<JsonValue> {
-    Json(json!(user))
+fn get_user(_connection: db::Connection, user: ac_user::AcUser) -> Result<Json<JsonValue>, ApiResponder> {
+    Ok(Json(json!(user)))
 }
 
 // endregion
@@ -349,133 +350,115 @@ fn get_user(_connection: db::Connection, user: ac_user::AcUser) -> Json<JsonValu
 // region Admin
 
 #[post("/", data = "<other>")]
-fn add_admin(other: Json<ac_user::AcUser>, connection: db::Connection, user: ac_user::AcUser) -> Json<JsonValue> {
-    let other_user = ac_user::AcUser::get_user(other.google_id.clone(), &connection);
+fn add_admin(other: Json<ac_user::AcUser>, connection: db::Connection, user: ac_user::AcUser) -> Result<Json<JsonValue>, ApiResponder> {
+    let other_user = ac_user::AcUser::get_user(other.google_id.clone(), &connection)?;
 
     if user.group_id.is_none() || other_user.group_id.is_none() || user.group_id.unwrap() != other_user.group_id.unwrap() {
-        return Json(json!(RespMessage { message: "Cannot make admin because either the user is not in a group or correct group.".to_string()}))
+        return Err(ApiResponder {error: Status::BadRequest, message: "Cannot make admin because either the user is not in a group or correct group.".to_string()})
     }
 
     if user.role_id.is_none() || user.role_id.unwrap() < constants::Roles::Admin as i32 {
-        return Json(json!(RespMessage { message: "Insufficient access.".to_string()}))
+        return Err(ApiResponder {error: Status::Unauthorized, message: "Insufficient access.".to_string()})
     }
 
-    let resp = RespMessage { message: ac_user::AcUser::change_role(other_user, constants::Roles::Admin, &connection) };
-    Json(json!(resp))
+    ac_user::AcUser::change_role(other_user, constants::Roles::Admin, &connection)?;
+    Ok(Json(json!({})))
 }
 
 #[delete("/", data = "<other>")]
-fn remove_member(other: Json<ac_user::AcUser>, connection: db::Connection, user: ac_user::AcUser) -> Json<JsonValue> {
-    let other_user = ac_user::AcUser::get_user(other.google_id.clone(), &connection);
+fn remove_member(other: Json<ac_user::AcUser>, connection: db::Connection, user: ac_user::AcUser) -> Result<Json<JsonValue>, ApiResponder> {
+    let other_user = ac_user::AcUser::get_user(other.google_id.clone(), &connection)?;
 
     if user.group_id.is_none() || other_user.group_id.is_none() || user.group_id.unwrap() != other_user.group_id.unwrap() {
-        return Json(json!(RespMessage { message: "Cannot remove user because either the user is not in a group or correct group.".to_string()}))
+        return Err(ApiResponder {error: Status::BadRequest, message: "Cannot remove user because either the user is not in a group or correct group.".to_string()})
     }
 
     if user.role_id.is_none() || user.role_id.unwrap() < constants::Roles::Admin as i32 {
-        return Json(json!(RespMessage { message: "Insufficient access.".to_string()}))
+        return Err(ApiResponder {error: Status::Unauthorized, message: "Insufficient access.".to_string()})
     }
 
     if user.role_id.unwrap() == constants::Roles::Admin as i32 && (other_user.role_id.is_some() && other_user.role_id.unwrap() == constants::Roles::Admin as i32) {
-        return Json(json!(RespMessage { message: "Only an Owner can Remove an Admin.".to_string()}))
+        return Err(ApiResponder {error: Status::Unauthorized, message: "Only an Owner can Remove an Admin.".to_string()})
     }
 
-    let resp = RespMessage { message: ac_user::AcUser::leave_group(other_user, &connection) };
-    Json(json!(resp))
+    ac_user::AcUser::leave_group(other_user, &connection)?;
+    Ok(Json(json!({})))
 }
 
 #[delete("/admin", data = "<other>")]
-fn remove_admin(other: Json<ac_user::AcUser>, connection: db::Connection, user: ac_user::AcUser) -> Json<JsonValue> {
-    let other_user = ac_user::AcUser::get_user(other.google_id.clone(), &connection);
+fn remove_admin(other: Json<ac_user::AcUser>, connection: db::Connection, user: ac_user::AcUser) -> Result<Json<JsonValue>, ApiResponder> {
+    let other_user = ac_user::AcUser::get_user(other.google_id.clone(), &connection)?;
 
     if user.group_id.is_none() || other_user.group_id.is_none() || user.group_id.unwrap() != other_user.group_id.unwrap() {
-        return Json(json!(RespMessage { message: "Cannot make admin because either the user is not in a group or correct group.".to_string()}))
+        return Err(ApiResponder {error: Status::BadRequest, message: "Cannot remove admin because either the user is not in a group or correct group.".to_string()})
     }
 
     if user.role_id.is_none() || user.role_id.unwrap() < constants::Roles::Owner as i32 {
-        return Json(json!(RespMessage { message: "Insufficient access.".to_string()}))
+        return Err(ApiResponder {error: Status::Unauthorized, message: "Insufficient access.".to_string()})
     }
 
-    let resp = RespMessage { message: ac_user::AcUser::change_role(other_user, constants::Roles::User, &connection) };
-    Json(json!(resp))
+    ac_user::AcUser::change_role(other_user, constants::Roles::User, &connection)?;
+    Ok(Json(json!({})))
 }
 
 #[patch("/code")]
-fn regenerate_code(connection: db::Connection, user: ac_user::AcUser) -> Json<JsonValue> {
+fn regenerate_code(connection: db::Connection, user: ac_user::AcUser) -> Result<Json<JsonValue>, ApiResponder> {
 
     if user.group_id.is_none(){
-        return Json(json!(RespMessage { message: "Cannot regenerate code because user is not in a group.".to_string()}))
+        return Err(ApiResponder {error: Status::BadRequest, message: "Cannot regenerate code because user is not in a group.".to_string()})
     }
 
     if user.role_id.is_none() || user.role_id.unwrap() < constants::Roles::Admin as i32 {
-        return Json(json!(RespMessage { message: "Insufficient access.".to_string()}))
+        return Err(ApiResponder {error: Status::Unauthorized, message: "Insufficient access.".to_string()})
     }
 
-    let group_res = group::Group::get_group_by_id(user.group_id.unwrap(), &connection);
-
-    //TODO make those results return an enum
-    if group_res.is_err() {
-        return Json(json!(RespMessage { message: "Error getting group.".to_string()}))
-    }
-
-    let mut group = group_res.unwrap();
+    let mut group = group::Group::get_group_by_id(user.group_id.unwrap(), &connection)?;
 
     group.join_code = generate_code(&connection);
 
-    let res = group::Group::update(group.id, group, &connection);
+    group::Group::update(group.id, group, &connection)?;
 
-    if res {
-        return Json(json!(RespMessage { message: "success".to_string() }))
-    }
-
-    Json(json!(RespMessage { message: "Error Regenerating Code".to_string() }))
+    Ok(Json(json!({})))
 }
 
 #[delete("/group")]
-fn delete_group(connection: db::Connection, user: ac_user::AcUser) -> Json<JsonValue> {
+fn delete_group(connection: db::Connection, user: ac_user::AcUser) -> Result<Json<JsonValue>, ApiResponder> {
     if user.group_id.is_none(){
-        return Json(json!(RespMessage { message: "Cannot delete group because user is not in a group.".to_string()}))
+        return Err(ApiResponder {error: Status::BadRequest, message: "Cannot delete group because user is not in a group.".to_string()})
     }
 
     if user.role_id.is_none() || user.role_id.unwrap() < constants::Roles::Owner as i32 {
-        return Json(json!(RespMessage { message: "Insufficient access.".to_string()}))
+        return Err(ApiResponder {error: Status::Unauthorized, message: "Insufficient access.".to_string()})
     }
 
     let group_id_to_delete = user.group_id.unwrap();
-    let all_users = ac_user::AcUser::get_users_by_group(group_id_to_delete, &connection);
+    let all_users = ac_user::AcUser::get_users_by_group(group_id_to_delete, &connection)?;
 
     for user_to_modify in all_users.iter().cloned() {
-        ac_user::AcUser::leave_group(user_to_modify, &connection);
+        ac_user::AcUser::leave_group(user_to_modify, &connection)?;
     }
 
-    let res = group::Group::delete(group_id_to_delete, &connection);
+    group::Group::delete(group_id_to_delete, &connection)?;
 
-    if res {
-        return Json(json!(RespMessage { message: "success".to_string() }))
-    }
-
-    Json(json!(RespMessage { message: "Error Deleting Group".to_string() }))
+    Ok(Json(json!({})))
 }
 
 #[get("/")]
-fn get_admin_data(connection: db::Connection, user: ac_user::AcUser) -> Json<JsonValue> {
+fn get_admin_data(connection: db::Connection, user: ac_user::AcUser) -> Result<Json<JsonValue>, ApiResponder> {
     if user.group_id.is_none(){
-        return Json(json!(RespMessage { message: "Cannot get group because user is not in a group.".to_string()}))
+        return Err(ApiResponder {error: Status::BadRequest, message: "Cannot get group because user is not in a group.".to_string()})
     }
 
-    let group_res = group::Group::get_group_by_id(user.group_id.unwrap(), &connection);
-    if group_res.is_err() {
-        return Json(json!(RespMessage { message: "Cannot find group.".to_string()}))
-    }
+    let group = group::Group::get_group_by_id(user.group_id.unwrap(), &connection)?;
 
     let response = AdminResponse {
-        users: ac_user::AcUser::get_regular_users_by_group(user.group_id.unwrap(), &connection),
-        admins: ac_user::AcUser::get_admin_users_by_group(user.group_id.unwrap(), &connection),
+        users: ac_user::AcUser::get_regular_users_by_group(user.group_id.unwrap(), &connection)?,
+        admins: ac_user::AcUser::get_admin_users_by_group(user.group_id.unwrap(), &connection)?,
 
-        join_code: group_res.unwrap().join_code
+        join_code: group.join_code
     };
 
-    Json(json!(response))
+    Ok(Json(json!(response)))
 }
 
 // endregion
@@ -483,12 +466,12 @@ fn get_admin_data(connection: db::Connection, user: ac_user::AcUser) -> Json<Jso
 // region Home
 
 #[get("/")]
-fn get_home(connection: db::Connection, user: ac_user::AcUser) -> Json<JsonValue> {
+fn get_home(connection: db::Connection, user: ac_user::AcUser) -> Result<Json<JsonValue>, ApiResponder> {
     if user.group_id.is_none(){
-        return Json(json!(RespMessage { message: "Cannot get home because user is not in a group.".to_string()}))
+        return Err(ApiResponder {error: Status::BadRequest, message: "Cannot get home because user is not in a group.".to_string()})
     }
 
-    let all_users = ac_user::AcUser::get_users_by_group(user.group_id.unwrap(), &connection);
+    let all_users = ac_user::AcUser::get_users_by_group(user.group_id.unwrap(), &connection)?;
 
     let mut resp: Vec<HomeResponse> = Vec::new();
 
@@ -500,16 +483,16 @@ fn get_home(connection: db::Connection, user: ac_user::AcUser) -> Json<JsonValue
         let home_resp = HomeResponse {
             display_name: user_to_get.display_name.clone(),
 
-            missing_art: get_art_list(collectable::Collectable::get_missing(constants::CollectableTypeEnum::Art, user_to_get.google_id.clone(), &connection)),
-            missing_bugs: get_bug_list(collectable::Collectable::get_missing(constants::CollectableTypeEnum::Bug, user_to_get.google_id.clone(), &connection)),
-            missing_fish: get_fish_list(collectable::Collectable::get_missing(constants::CollectableTypeEnum::Fish, user_to_get.google_id.clone(), &connection)),
-            missing_fossils: get_fossil_list(collectable::Collectable::get_missing(constants::CollectableTypeEnum::Fossil, user_to_get.google_id.clone(), &connection))
+            missing_art: get_art_list(collectable::Collectable::get_missing(constants::CollectableTypeEnum::Art, user_to_get.google_id.clone(), &connection)?),
+            missing_bugs: get_bug_list(collectable::Collectable::get_missing(constants::CollectableTypeEnum::Bug, user_to_get.google_id.clone(), &connection)?),
+            missing_fish: get_fish_list(collectable::Collectable::get_missing(constants::CollectableTypeEnum::Fish, user_to_get.google_id.clone(), &connection)?),
+            missing_fossils: get_fossil_list(collectable::Collectable::get_missing(constants::CollectableTypeEnum::Fossil, user_to_get.google_id.clone(), &connection)?)
         };
 
         resp.push(home_resp);
     }
 
-    Json(json!(resp))
+    Ok(Json(json!(resp)))
 }
 
 // endregion
@@ -524,6 +507,6 @@ fn main() {
         .mount("/groups", routes![group_join, group_create, group_leave])
         .mount("/user", routes![get_user])
         .mount("/admin", routes![add_admin, remove_member, remove_admin, regenerate_code, delete_group, get_admin_data])
-        .mount("/home", routes![get_home])
+//        .mount("/home", routes![get_home])
         .launch();
 }

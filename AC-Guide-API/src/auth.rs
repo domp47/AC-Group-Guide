@@ -11,6 +11,7 @@ use openssl::x509;
 use diesel::pg::PgConnection;
 
 use crate::ac_user::AcUser;
+use crate::api_responder::ApiResponder;
 
 #[derive(Serialize, Deserialize)]
 pub struct Header {
@@ -200,23 +201,23 @@ pub fn verify_firebase_jwt(jwt: &str) -> Result<Payload, String> {
     return Ok(body)
 }
 
-pub fn get_ac_user_from_auth(auth: Payload, connection: &PgConnection) -> AcUser {
+#[derive(Debug)]
+pub enum ApiKeyError {
+    Denied,
+    DbConnectionError
+}
+
+pub fn get_ac_user_from_auth(auth: Payload, connection: &PgConnection) -> Result<AcUser, ApiResponder> {
     let user_id = auth.sub;
     let user = AcUser::get_user(user_id.clone(), connection);
 
-    if ! user.is_default() {
-        return user
+    if user.is_ok() {
+        return Ok(user.unwrap())
     }
 
     let new_user = AcUser { google_id: user_id, display_name: auth.name, group_id: None, role_id: None };
 
     AcUser::create(new_user, connection)
-}
-
-#[derive(Debug)]
-pub enum ApiKeyError {
-    Denied,
-    DbConnectionError
 }
 
 impl<'a, 'r> FromRequest<'a, 'r> for AcUser {
@@ -235,7 +236,15 @@ impl<'a, 'r> FromRequest<'a, 'r> for AcUser {
             let res = verify_firebase_jwt(keys[0]);
             match res {
                 Ok(p) => {
-                    return Outcome::Success(get_ac_user_from_auth(p, &db))
+                    match get_ac_user_from_auth(p, &db) {
+                        Ok(u) => {
+                            return Outcome::Success(u)
+                        }
+                        Err(err) => {
+                            println!("Error Getting/Creating User {}", err.message);
+                            return Outcome::Failure((Status::InternalServerError, ApiKeyError::DbConnectionError))
+                        }
+                    }
                 }
                 Err(err) => {
                     println!("{}", err);
