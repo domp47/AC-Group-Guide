@@ -1,8 +1,8 @@
 <div *ngIf="noGroup">
-    <h1>Please Join a Group To Use This Feature</h1>
+    <h1 class="mat-h1">Please Join a Group To Use This Feature</h1>
 </div>
 <div *ngIf="data">
-    <h1>Your Group's Missing Items</h1>
+    <h1 class="mat-h1">Your Group's Missing Items</h1>
     <div class="mat-tab-group">
         <mat-expansion-panel *ngFor="let item of data" class="mt-2">
             <mat-expansion-panel-header>

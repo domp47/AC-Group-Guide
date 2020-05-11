@@ -4,10 +4,7 @@ use rocket::Outcome;
 use rocket::http::Status;
 use rocket::request::{self, Request, FromRequest};
 use std::collections::HashMap;
-//use serde::{Deserialize, Serialize};
 use openssl::x509;
-//use openssl::rsa;
-//use openssl::sha;
 use diesel::pg::PgConnection;
 
 use crate::ac_user::AcUser;

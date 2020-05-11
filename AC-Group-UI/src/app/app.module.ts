@@ -67,6 +67,7 @@ import { MissingCardComponent } from './Components/missing-card/missing-card.com
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { HttpClientInterceptor } from './Interceptors/http-client.interceptor';
 import { AuthService } from './Services/auth.service';
+import { ConfirmationDialogComponent } from './Components/confirmation-dialog/confirmation-dialog.component';
 
 @NgModule({
   exports: [],
@@ -83,6 +84,7 @@ import { AuthService } from './Services/auth.service';
     BugCardComponent,
     FossilCardComponent,
     MissingCardComponent,
+    ConfirmationDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -136,6 +138,9 @@ import { AuthService } from './Services/auth.service';
     MatToolbarModule,
     MatTooltipModule,
     MatTreeModule,
+  ],
+  entryComponents: [
+    ConfirmationDialogComponent
   ],
   providers: [
     {

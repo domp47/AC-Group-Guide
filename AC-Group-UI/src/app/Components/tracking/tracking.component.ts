@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { map, catchError } from 'rxjs/operators';
 import { TrackingResponse } from 'src/app/Models/tracking-response.model';
@@ -24,7 +24,7 @@ export class TrackingComponent implements OnInit {
   data: TrackingResponse;
   hemisphere: boolean = true;
 
-  constructor(private service: TrackingService, private _snackBar: MatSnackBar) { }
+  constructor(private service: TrackingService, private _snackBar: MatSnackBar, private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
     this.getData();

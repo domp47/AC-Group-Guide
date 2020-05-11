@@ -305,6 +305,10 @@ fn group_join(info: Json<JoinGroup>, connection: db::Connection, user: ac_user::
 
 #[delete("/")]
 fn group_leave(connection: db::Connection, user: ac_user::AcUser) -> Result<Json<JsonValue>, ApiResponder> {
+    if user.role_id.is_some() && user.role_id.unwrap() == constants::Roles::Owner as i32{
+        return Err(ApiResponder {error: Status::Conflict, message: "Owner cannot leave group. Either transfer ownership or delete the group.".to_string()})
+    }
+
     ac_user::AcUser::leave_group(user, &connection)?;
 
     Ok(Json(json!({})))
@@ -329,6 +333,17 @@ fn group_create(info: Json<CreateGroup>, connection: db::Connection, user: ac_us
     ac_user::AcUser::change_role(joined_user, constants::Roles::Owner, &connection)?;
 
     Ok(Json(json!(created_group)))
+}
+
+#[get("/")]
+fn group_get(connection: db::Connection, user: ac_user::AcUser) -> Result<Json<JsonValue>, ApiResponder> {
+    if user.group_id.is_none(){
+        return Err(ApiResponder {error: rocket::http::Status::new(constants::NO_GROUP_CODE, constants::NO_GROUP_REASON), message: "User is not in a group".to_string()})
+    }
+
+    let group = group::Group::get_group_by_id(user.group_id.unwrap(), &connection)?;
+
+    Ok(Json(json!(group)))
 }
 
 // endregion
@@ -456,6 +471,28 @@ fn get_admin_data(connection: db::Connection, user: ac_user::AcUser) -> Result<J
     Ok(Json(json!(response)))
 }
 
+#[post("/transfer", data = "<other>")]
+fn ownership_transfer(other: Json<ac_user::AcUser>, connection: db::Connection, user: ac_user::AcUser) -> Result<Json<JsonValue>, ApiResponder> {
+    let other_user = ac_user::AcUser::get_user(other.google_id.clone(), &connection)?;
+
+    if user.group_id.is_none(){
+        return Err(ApiResponder {error: Status::BadRequest, message: "Cannot transfer group because user is not in a group.".to_string()})
+    }
+
+    if user.role_id.is_none() || user.role_id.unwrap() < constants::Roles::Owner as i32 {
+        return Err(ApiResponder {error: Status::Forbidden, message: "Insufficient access.".to_string()})
+    }
+
+    if user.group_id.is_none() || other_user.group_id.is_none() || user.group_id.unwrap() != other_user.group_id.unwrap() {
+        return Err(ApiResponder {error: Status::BadRequest, message: "Cannot transfer group because either the user is not in a group or correct group.".to_string()})
+    }
+
+    ac_user::AcUser::change_role(other_user, constants::Roles::Owner, &connection)?;
+    ac_user::AcUser::change_role(user, constants::Roles::Admin, &connection)?;
+
+    Ok(Json(json!({})))
+}
+
 // endregion
 
 // region Home
@@ -539,9 +576,9 @@ fn main() {
         .register(catchers)
         .manage(db::connect())
         .mount("/tracking", routes![get_tracking, catch_item, uncatch_item])
-        .mount("/groups", routes![group_join, group_create, group_leave])
+        .mount("/groups", routes![group_join, group_create, group_leave, group_get])
         .mount("/user", routes![get_user])
-        .mount("/admin", routes![add_admin, remove_member, remove_admin, regenerate_code, delete_group, get_admin_data])
+        .mount("/admin", routes![add_admin, remove_member, remove_admin, regenerate_code, delete_group, get_admin_data, ownership_transfer])
         .mount("/home", routes![get_home])
         .attach(cors)
         .launch();

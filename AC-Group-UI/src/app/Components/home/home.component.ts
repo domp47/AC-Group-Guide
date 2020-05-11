@@ -42,8 +42,9 @@ export class HomeComponent implements OnInit {
       this.data = data;
     },
     (err: HttpErrorResponse) => {
+      this.noGroup = true;
+      this.data = null;
       if (err.status == 419){
-        this.noGroup = true;
         return;
       }
 
