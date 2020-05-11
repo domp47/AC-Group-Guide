@@ -48,7 +48,7 @@ impl Collectable {
 
         match crate::schema::collectables::dsl::collectables
             .inner_join(crate::schema::collected_items::dsl::collected_items.on(collected_items::collectable_id.eq(collectables::id)))
-            .filter(collectables::id.eq(type_).and(collected_items::user_id.eq(user_id)))
+            .filter(collectables::type_id.eq(type_).and(collected_items::user_id.eq(user_id)))
             .select((collectables::id, collectables::display_name, collectables::img_location,
                      collectables::type_id, collectables::price, collectables::spawn_location,
                      collectables::north_mask, collectables::south_mask, collectables::north_label,

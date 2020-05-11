@@ -23,14 +23,14 @@
         <h1>Not Obtained</h1>
         <mat-grid-list [cols]="nCols" gutterSize="1.5rem" rowHeight="350px" (window:resize)="onResize($event)">
             <mat-grid-tile *ngFor="let art of data.missingArt">
-                <app-art-card class="app-card" [item]="art" (clicked)="catchItem($event)" [caught]="false"></app-art-card>
+                <app-art-card class="app-card" [item]="art" (clicked)="handleItemClick($event)" [caught]="false"></app-art-card>
             </mat-grid-tile>  
         </mat-grid-list>
 
         <h1>Collected</h1>
         <mat-grid-list [cols]="nCols" gutterSize="1.5rem" rowHeight="350px" (window:resize)="onResize($event)">
             <mat-grid-tile *ngFor="let art of data.acquiredArt">
-                <app-art-card class="app-card" [item]="art" (clicked)="catchItem($event)" [caught]="true"></app-art-card>
+                <app-art-card class="app-card" [item]="art" (clicked)="handleItemClick($event)" [caught]="true"></app-art-card>
             </mat-grid-tile>  
         </mat-grid-list>
     </div>
@@ -39,28 +39,28 @@
         <h1>Available To Catch</h1>
         <mat-grid-list  [cols]="nCols" gutterSize="1.5rem" rowHeight="350px" (window:resize)="onResize($event)">
             <mat-grid-tile *ngFor="let bug of data.availNowBugs">
-                <app-bug-card class="app-card" [item]="bug" [hemisphere]="hemisphere" (clicked)="catchItem($event)" [caught]="false"></app-bug-card>
+                <app-bug-card class="app-card" [item]="bug" [hemisphere]="hemisphere" (clicked)="handleItemClick($event)" [caught]="false"></app-bug-card>
             </mat-grid-tile>  
         </mat-grid-list>
 
         <h1>Available This Month</h1>
         <mat-grid-list  [cols]="nCols" gutterSize="1.5rem" rowHeight="350px" (window:resize)="onResize($event)">
             <mat-grid-tile *ngFor="let bug of data.availLaterBugs">
-                <app-bug-card class="app-card" [item]="bug" [hemisphere]="hemisphere" (clicked)="catchItem($event)" [caught]="false"></app-bug-card>
+                <app-bug-card class="app-card" [item]="bug" [hemisphere]="hemisphere" (clicked)="handleItemClick($event)" [caught]="false"></app-bug-card>
             </mat-grid-tile>  
         </mat-grid-list>
 
         <h1>Not Available</h1>
         <mat-grid-list  [cols]="nCols" gutterSize="1.5rem" rowHeight="350px" (window:resize)="onResize($event)">
             <mat-grid-tile *ngFor="let bug of data.notAvailBugs">
-                <app-bug-card class="app-card" [item]="bug" [hemisphere]="hemisphere" (clicked)="catchItem($event)" [caught]="false"></app-bug-card>
+                <app-bug-card class="app-card" [item]="bug" [hemisphere]="hemisphere" (clicked)="handleItemClick($event)" [caught]="false"></app-bug-card>
             </mat-grid-tile>
         </mat-grid-list>
 
         <h1>Already Caught</h1>
         <mat-grid-list  [cols]="nCols" gutterSize="1.5rem" rowHeight="350px" (window:resize)="onResize($event)">
             <mat-grid-tile *ngFor="let bug of data.caughtBugs">
-                <app-bug-card class="app-card" [item]="bug" [hemisphere]="hemisphere" (clicked)="catchItem($event)" [caught]="true"></app-bug-card>
+                <app-bug-card class="app-card" [item]="bug" [hemisphere]="hemisphere" (clicked)="handleItemClick($event)" [caught]="true"></app-bug-card>
             </mat-grid-tile>
         </mat-grid-list>
     </div>
@@ -69,28 +69,28 @@
         <h1>Available To Catch</h1>
         <mat-grid-list [cols]="nCols" gutterSize="1.5rem" rowHeight="350px" (window:resize)="onResize($event)">
             <mat-grid-tile *ngFor="let fish of data.availNowFish">
-                <app-fish-card class="app-card" [item]="fish" [hemisphere]="hemisphere" (clicked)="catchItem($event)" [caught]="false"></app-fish-card>
+                <app-fish-card class="app-card" [item]="fish" [hemisphere]="hemisphere" (clicked)="handleItemClick($event)" [caught]="false"></app-fish-card>
             </mat-grid-tile>  
         </mat-grid-list>
 
         <h1>Available This Month</h1>
         <mat-grid-list [cols]="nCols" gutterSize="1.5rem" rowHeight="350px" (window:resize)="onResize($event)">
             <mat-grid-tile *ngFor="let fish of data.availLaterFish">
-                <app-fish-card class="app-card" [item]="fish" [hemisphere]="hemisphere" (clicked)="catchItem($event)" [caught]="false"></app-fish-card>
+                <app-fish-card class="app-card" [item]="fish" [hemisphere]="hemisphere" (clicked)="handleItemClick($event)" [caught]="false"></app-fish-card>
             </mat-grid-tile>  
         </mat-grid-list>
 
         <h1>Not Available</h1>
         <mat-grid-list [cols]="nCols" gutterSize="1.5rem" rowHeight="350px" (window:resize)="onResize($event)">
             <mat-grid-tile *ngFor="let fish of data.notAvailFish">
-                <app-fish-card class="app-card" [item]="fish" [hemisphere]="hemisphere" (clicked)="catchItem($event)" [caught]="false"></app-fish-card>
+                <app-fish-card class="app-card" [item]="fish" [hemisphere]="hemisphere" (clicked)="handleItemClick($event)" [caught]="false"></app-fish-card>
             </mat-grid-tile>  
         </mat-grid-list>
 
         <h1>Already Caught</h1>
         <mat-grid-list [cols]="nCols" gutterSize="1.5rem" rowHeight="350px" (window:resize)="onResize($event)">
             <mat-grid-tile *ngFor="let fish of data.caughtFish">
-                <app-fish-card class="app-card" [item]="fish" [hemisphere]="hemisphere" (clicked)="catchItem($event)" [caught]="true"></app-fish-card>
+                <app-fish-card class="app-card" [item]="fish" [hemisphere]="hemisphere" (clicked)="handleItemClick($event)" [caught]="true"></app-fish-card>
             </mat-grid-tile>  
         </mat-grid-list>
 
@@ -112,14 +112,14 @@
         <h1>Not Obtained</h1>
         <mat-grid-list [cols]="nCols" gutterSize="1.5rem" rowHeight="250px" (window:resize)="onResize($event)">
             <mat-grid-tile *ngFor="let fossil of data.missingFossils">
-                <app-fossil-card class="app-card" [item]="fossil" (clicked)="catchItem($event)" [caught]="false"></app-fossil-card>
+                <app-fossil-card class="app-card" [item]="fossil" (clicked)="handleItemClick($event)" [caught]="false"></app-fossil-card>
             </mat-grid-tile>  
         </mat-grid-list>
 
         <h1>Collected</h1>
         <mat-grid-list [cols]="nCols" gutterSize="1.5rem" rowHeight="250px" (window:resize)="onResize($event)">
             <mat-grid-tile *ngFor="let fossil of data.acquiredFossils">
-                <app-fossil-card class="app-card" [item]="fossil" (clicked)="catchItem($event)" [caught]="true"></app-fossil-card>
+                <app-fossil-card class="app-card" [item]="fossil" (clicked)="handleItemClick($event)" [caught]="true"></app-fossil-card>
             </mat-grid-tile>  
         </mat-grid-list>
     </div>

@@ -32,7 +32,7 @@ export class TrackingService {
   }
 
   uncatchItem(id: number): Observable<any> {
-    return this.http.delete(`${this.base}/${id}`, null).pipe(
+    return this.http.delete(`${this.base}/${id}`).pipe(
       map(data => data)
     );
   }

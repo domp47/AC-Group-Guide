@@ -56,17 +56,33 @@ export class TrackingComponent implements OnInit {
   }
 
   uncatchItem(id: number) {
-    this.service.uncatchItem(id).pipe(
-      map( _ => this.getData()),
-      catchError(err => Observable.throw(this.handleError(err)))
-    );
+    this.service.uncatchItem(id).subscribe(_ => {
+      this.getData();
+    },
+    (err: HttpErrorResponse) => {
+      this._snackBar.open(err.statusText, null, {
+        duration: 3000
+      });
+    });
   }
 
   catchItem(id: number){
-    this.service.catchItem(id).pipe(
-      map( _ => this.getData()),
-      catchError(err => Observable.throw(this.handleError(err)))
-    );
+    this.service.catchItem(id).subscribe(_ => {
+      this.getData();
+    },
+    (err: HttpErrorResponse) => {
+      this._snackBar.open(err.statusText, null, {
+        duration: 3000
+      });
+    });
+  }
+
+  handleItemClick(event: any) {
+    if(event.add) {
+      this.catchItem(event.id);
+    }else{
+      this.uncatchItem(event.id);
+    }
   }
 
   filterChange(event: MatButtonToggleChange) {

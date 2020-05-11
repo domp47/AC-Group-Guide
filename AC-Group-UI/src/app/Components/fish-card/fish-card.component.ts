@@ -27,9 +27,9 @@ export class FishCardComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  itemClicked() {
-    let name = this.item.name;
+  itemClicked(){
+    let id = this.item.id;
     let add = !this.caught;
-    this.clicked.emit({ name, add });
+    this.clicked.emit({id, add});
   }
 }
