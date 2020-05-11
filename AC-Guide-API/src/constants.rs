@@ -10,3 +10,6 @@ pub enum Roles {
     Admin = 2,
     Owner = 3
 }
+
+pub static NO_GROUP_CODE: u16 = 419;
+pub static NO_GROUP_REASON: &'static str = "User Is Not In a Group";

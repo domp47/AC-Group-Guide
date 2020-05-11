@@ -1,5 +1,6 @@
 export class Collectable {
-  name: string;
-  imgLocation: string;
-  price: number;
+    id: number;
+    name: string;
+    imgLocation: string;
+    price: number;
 }

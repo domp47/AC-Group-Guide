@@ -1,16 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { User } from 'src/app/Models/user.model';
-import { Fossil } from 'src/app/Models/fossil.model';
-import { Art } from 'src/app/Models/art.model';
-import { Bug } from 'src/app/Models/bug.model';
-import { Fish } from 'src/app/Models/fish.model';
-import { AngularFirestore, DocumentSnapshot, DocumentData, QuerySnapshot } from '@angular/fire/firestore';
-import { AuthService } from 'src/app/Services/auth.service';
-import { mergeMap, first } from 'rxjs/operators';
-import { FaStackItemSizeDirective } from '@fortawesome/angular-fontawesome';
-import { Group } from 'src/app/Models/group.model';
-import { ItemsService } from './../../Services/Items/items.service';
-import { Items } from './../../Models/items.model';
+import { HomeResponse } from 'src/app/Models/home-response.model';
+import { HomeService } from 'src/app/Services/Home/home.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-home',
@@ -18,21 +10,15 @@ import { Items } from './../../Models/items.model';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
-  constructor(private db: AngularFirestore, public authService: AuthService, private itemsService: ItemsService) {}
 
-  data: GroupData[] = [];
+  constructor(private service: HomeService, private _snackBar: MatSnackBar) { }
 
-  inGroup: boolean;
-
-  art: Art[] = [];
-  bugs: Bug[] = [];
-  fish: Fish[] = [];
-  fossils: Fossil[] = [];
-
+  data: HomeResponse[];
+  noGroup: boolean = false;
   nCols: number;
 
   ngOnInit(): void {
-    this.getMainData();
+    this.getData();
     this.nCols = this.calculateCols(window.innerWidth);
   }
 
@@ -50,77 +36,21 @@ export class HomeComponent implements OnInit {
     return 8;
   }
 
-  getMainData() {
-    this.itemsService.items$.pipe(first()).subscribe((items: Items) => {
-      console.log(items);
-      this.art = items.Art;
-      this.fossils = items.Fossils;
-      this.fish = items.Fish;
-      this.bugs = items.Bugs;
-    });
-    this.getData();
-  }
+  getData(){
+    this.service.getGroupData().subscribe(data => {
+      this.noGroup = false;
+      this.data = data;
+    },
+    (err: HttpErrorResponse) => {
+      if (err.status == 419){
+        this.noGroup = true;
+        return;
+      }
 
-  getData() {
-    this.authService.user$.pipe(first()).subscribe((me: User) => {
-      this.authService.members$.subscribe((members) => {
-        console.log(members);
-        this.updateStuff(me.uid, members);
+      this._snackBar.open(err.statusText, null, {
+        duration: 3000
       });
     });
   }
 
-  updateStuff(myUid: string, members: User[]) {
-    this.data = [];
-    for (let user of members) {
-      if (user.uid === myUid) continue;
-
-      let entry = new GroupData();
-      entry.name = user.displayName;
-
-      let caughtItems: string[] = user.itemsCaught;
-      if (caughtItems == null) caughtItems = [];
-
-      for (let a of this.art) {
-        if (caughtItems.indexOf(a.name) === -1)
-          //Not caught yet
-          entry.art.push(a);
-      }
-
-      for (let b of this.bugs) {
-        if (caughtItems.indexOf(b.name) === -1)
-          //Not caught yet
-          entry.bugs.push(b);
-      }
-
-      for (let f of this.fish) {
-        if (caughtItems.indexOf(f.name) === -1)
-          //Not caught yet
-          entry.fish.push(f);
-      }
-
-      for (let f of this.fossils) {
-        if (caughtItems.indexOf(f.name) === -1)
-          //Not caught yet
-          entry.fossils.push(f);
-      }
-
-      this.data.push(entry);
-    }
-  }
-}
-
-export class GroupData {
-  constructor() {
-    this.art = [];
-    this.bugs = [];
-    this.fish = [];
-    this.fossils = [];
-  }
-
-  name: string;
-  art: Art[];
-  bugs: Bug[];
-  fish: Fish[];
-  fossils: Fossil[];
 }

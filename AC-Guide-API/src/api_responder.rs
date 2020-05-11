@@ -36,3 +36,62 @@ impl<'a> Responder<'a> for ApiResponder {
             .ok()
     }
 }
+
+
+
+pub fn handle_404<'r>(req: &'r rocket::Request) -> rocket::response::Result<'r> {
+
+    let api_responder = ApiResponder {error: Status::NotFound, message: "Not Found.".to_string()};
+    let resp_body = serde_json::to_string(&RespBody::new(&api_responder)).unwrap_or("".to_string());
+
+    let resp = rocket::response::Response::build()
+        .header(ContentType::JSON)
+        .status(Status::NotFound)
+        .sized_body(Cursor::new(resp_body))
+        .finalize();
+
+    resp.respond_to(req)
+}
+
+pub fn handle_403<'r>(req: &'r rocket::Request) -> rocket::response::Result<'r> {
+
+    let api_responder = ApiResponder {error: Status::NotFound, message: "Access Denied.".to_string()};
+    let resp_body = serde_json::to_string(&RespBody::new(&api_responder)).unwrap_or("".to_string());
+
+    let resp = rocket::response::Response::build()
+        .header(ContentType::JSON)
+        .status(Status::Forbidden)
+        .sized_body(Cursor::new(resp_body))
+        .finalize();
+
+    resp.respond_to(req)
+}
+
+pub fn handle_401<'r>(req: &'r rocket::Request) -> rocket::response::Result<'r> {
+
+    let api_responder = ApiResponder {error: Status::NotFound, message: "Not Authorized.".to_string()};
+    let resp_body = serde_json::to_string(&RespBody::new(&api_responder)).unwrap_or("".to_string());
+
+    let resp = rocket::response::Response::build()
+        .header(ContentType::JSON)
+        .status(Status::Unauthorized)
+        .sized_body(Cursor::new(resp_body))
+        .finalize();
+
+    resp.respond_to(req)
+}
+
+pub fn handle_500<'r>(req: &'r rocket::Request) -> rocket::response::Result<'r> {
+
+    let api_responder = ApiResponder {error: Status::NotFound, message: "Server Error.".to_string()};
+    let resp_body = serde_json::to_string(&RespBody::new(&api_responder)).unwrap_or("".to_string());
+
+    let resp = rocket::response::Response::build()
+        .header(ContentType::JSON)
+        .status(Status::Unauthorized)
+        .sized_body(Cursor::new(resp_body))
+        .finalize();
+
+    resp.respond_to(req)
+}
+

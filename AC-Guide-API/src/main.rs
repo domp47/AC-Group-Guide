@@ -7,6 +7,7 @@
 extern crate rocket_contrib;
 extern crate r2d2;
 extern crate r2d2_diesel;
+extern crate rocket_cors;
 
 mod auth;
 mod db;
@@ -52,12 +53,6 @@ struct CreateGroup {
 // endregion
 
 // region ReturnModels
-#[derive(Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-struct RespMessage{
-    message: String
-}
-
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 struct Art {
@@ -265,14 +260,14 @@ fn catch_item(id: i32, connection: db::Connection, user: ac_user::AcUser) -> Res
     let item = collected_item::CollectedItem { user_id: user.google_id, collectable_id: id };
     collected_item::CollectedItem::create(item, &connection)?;
 
-    Ok(Json(json!(RespMessage { message: "ok".to_string()})))
+    Ok(Json(json!({})))
 }
 
 #[delete("/<id>")]
 fn uncatch_item(id: i32, connection: db::Connection, user: ac_user::AcUser) -> Result<Json<JsonValue>, ApiResponder> {
     collected_item::CollectedItem::delete(user.google_id, id, &connection)?;
 
-    Ok(Json(json!(RespMessage { message: "ok".to_string()})))
+    Ok(Json(json!({})))
 }
 
 // endregion
@@ -358,7 +353,7 @@ fn add_admin(other: Json<ac_user::AcUser>, connection: db::Connection, user: ac_
     }
 
     if user.role_id.is_none() || user.role_id.unwrap() < constants::Roles::Admin as i32 {
-        return Err(ApiResponder {error: Status::Unauthorized, message: "Insufficient access.".to_string()})
+        return Err(ApiResponder {error: Status::Forbidden, message: "Insufficient access.".to_string()})
     }
 
     ac_user::AcUser::change_role(other_user, constants::Roles::Admin, &connection)?;
@@ -374,11 +369,11 @@ fn remove_member(other: Json<ac_user::AcUser>, connection: db::Connection, user:
     }
 
     if user.role_id.is_none() || user.role_id.unwrap() < constants::Roles::Admin as i32 {
-        return Err(ApiResponder {error: Status::Unauthorized, message: "Insufficient access.".to_string()})
+        return Err(ApiResponder {error: Status::Forbidden, message: "Insufficient access.".to_string()})
     }
 
     if user.role_id.unwrap() == constants::Roles::Admin as i32 && (other_user.role_id.is_some() && other_user.role_id.unwrap() == constants::Roles::Admin as i32) {
-        return Err(ApiResponder {error: Status::Unauthorized, message: "Only an Owner can Remove an Admin.".to_string()})
+        return Err(ApiResponder {error: Status::Forbidden, message: "Only an Owner can Remove an Admin.".to_string()})
     }
 
     ac_user::AcUser::leave_group(other_user, &connection)?;
@@ -394,7 +389,7 @@ fn remove_admin(other: Json<ac_user::AcUser>, connection: db::Connection, user: 
     }
 
     if user.role_id.is_none() || user.role_id.unwrap() < constants::Roles::Owner as i32 {
-        return Err(ApiResponder {error: Status::Unauthorized, message: "Insufficient access.".to_string()})
+        return Err(ApiResponder {error: Status::Forbidden, message: "Insufficient access.".to_string()})
     }
 
     ac_user::AcUser::change_role(other_user, constants::Roles::User, &connection)?;
@@ -409,7 +404,7 @@ fn regenerate_code(connection: db::Connection, user: ac_user::AcUser) -> Result<
     }
 
     if user.role_id.is_none() || user.role_id.unwrap() < constants::Roles::Admin as i32 {
-        return Err(ApiResponder {error: Status::Unauthorized, message: "Insufficient access.".to_string()})
+        return Err(ApiResponder {error: Status::Forbidden, message: "Insufficient access.".to_string()})
     }
 
     let mut group = group::Group::get_group_by_id(user.group_id.unwrap(), &connection)?;
@@ -428,7 +423,7 @@ fn delete_group(connection: db::Connection, user: ac_user::AcUser) -> Result<Jso
     }
 
     if user.role_id.is_none() || user.role_id.unwrap() < constants::Roles::Owner as i32 {
-        return Err(ApiResponder {error: Status::Unauthorized, message: "Insufficient access.".to_string()})
+        return Err(ApiResponder {error: Status::Forbidden, message: "Insufficient access.".to_string()})
     }
 
     let group_id_to_delete = user.group_id.unwrap();
@@ -468,7 +463,7 @@ fn get_admin_data(connection: db::Connection, user: ac_user::AcUser) -> Result<J
 #[get("/")]
 fn get_home(connection: db::Connection, user: ac_user::AcUser) -> Result<Json<JsonValue>, ApiResponder> {
     if user.group_id.is_none(){
-        return Err(ApiResponder {error: Status::BadRequest, message: "Cannot get home because user is not in a group.".to_string()})
+        return Err(ApiResponder {error: rocket::http::Status::new(constants::NO_GROUP_CODE, constants::NO_GROUP_REASON), message: "User is not in a group".to_string()})
     }
 
     let all_users = ac_user::AcUser::get_users_by_group(user.group_id.unwrap(), &connection)?;
@@ -501,12 +496,53 @@ fn main() {
     #[cfg(debug_assertions)]
     dotenv::dotenv().ok(); //Only loads .env file when compiled in debug mode.
 
+
+    let allowed_hosts_res = std::env::var("ALLOWED_HOSTS");
+
+    if allowed_hosts_res.is_err() {
+        println!("ENV Variable 'ALLOWED_HOSTS' not found.");
+        return
+    }
+
+    let allowed_hosts: Vec<String> = allowed_hosts_res.unwrap().split(",").map(|s| s.to_string()).collect();
+
+    let allowed_origins = rocket_cors::AllowedOrigins::some_exact(&allowed_hosts);
+
+    let cors_res: Result<rocket_cors::Cors, rocket_cors::Error> = rocket_cors::CorsOptions {
+        allowed_origins,
+        allowed_methods: vec![rocket::http::Method::Get, rocket::http::Method::Put, rocket::http::Method::Post, rocket::http::Method::Delete]
+            .into_iter()
+            .map(From::from)
+            .collect(),
+        allowed_headers: rocket_cors::AllowedHeaders::some(&["Authorization", "Accept", "Access-Control-Allow-Origin", "Content-Type", "Referer", "User-Agent"]),
+        allow_credentials: true,
+        ..Default::default()
+    }.to_cors();
+
+    if cors_res.is_err() {
+        println!("Failed to create CORS Fairing.");
+        return
+    }
+
+    let cors = cors_res.unwrap();
+
+
+    let mut catchers = Vec::new();
+
+    catchers.push(rocket::Catcher::new(404, api_responder::handle_404));
+    catchers.push(rocket::Catcher::new(403, api_responder::handle_403));
+    catchers.push(rocket::Catcher::new(401, api_responder::handle_401));
+    catchers.push(rocket::Catcher::new(500, api_responder::handle_500));
+
+
     rocket::ignite()
+        .register(catchers)
         .manage(db::connect())
         .mount("/tracking", routes![get_tracking, catch_item, uncatch_item])
         .mount("/groups", routes![group_join, group_create, group_leave])
         .mount("/user", routes![get_user])
         .mount("/admin", routes![add_admin, remove_member, remove_admin, regenerate_code, delete_group, get_admin_data])
-//        .mount("/home", routes![get_home])
+        .mount("/home", routes![get_home])
+        .attach(cors)
         .launch();
 }

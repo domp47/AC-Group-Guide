@@ -15,16 +15,10 @@
     </div>
 
     <mat-card-content>
-      <p><fa-icon [icon]="faMapMarked"></fa-icon> &nbsp; {{ item.location }}</p>
-      <p><fa-icon [icon]="faClock"></fa-icon> &nbsp; {{ item.timeLabel }}</p>
-      <p>
-        <fa-icon [icon]="faCalendar"></fa-icon> &nbsp;
-        {{ hemisphere ? item.northMonthLabel : item.southMonthLabel }}
-      </p>
-      <p>
-        <fa-icon [icon]="faDollarSign"></fa-icon> &nbsp;
-        {{ item.price | number }}
-      </p>
+        <p><fa-icon [icon]="faMapMarked"></fa-icon> &nbsp; {{item.location}}</p>
+        <p><fa-icon [icon]="faClock"></fa-icon> &nbsp; {{item.timeLabel}}</p>
+        <p><fa-icon [icon]="faCalendar"></fa-icon> &nbsp; {{hemisphere ? item.northLabel : item.southLabel}}</p>
+        <p><fa-icon [icon]="faDollarSign"></fa-icon> &nbsp; {{item.price | number}}</p>
     </mat-card-content>
   </mat-card>
 </div>

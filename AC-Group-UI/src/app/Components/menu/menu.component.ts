@@ -13,9 +13,7 @@ export class MenuComponent implements OnInit {
   constructor(private authService: AuthService) {}
 
   ngOnInit(): void {
-    this.authService.getUser().subscribe((data: firebase.User) => {
-      console.log(data);
-
+    this.authService.getUser().subscribe((data:firebase.User) => {
       this.isAuthenticated = !(data == null);
     });
   }

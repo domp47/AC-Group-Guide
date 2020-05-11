@@ -8,11 +8,10 @@
       <mat-card-title>{{ item.name }}</mat-card-title>
     </mat-card-header>
 
-    <div class="img-container">
-      <a [href]="'assets/' + item.imgLocation" target="_blank">
-        <img *ngIf="item.isPainting" [width]="item.width" [src]="'assets/' + item.imgLocation" />
-        <img *ngIf="!item.isPainting" [src]="'assets/' + item.imgLocation" />
-      </a>
+    <div class="center">
+        <a [href]="item.imgLocationAlt ? 'assets/' + item.imgLocationAlt : 'assets/' + item.imgLocation" target="_blank">
+            <img [src]="'assets/' + item.imgLocation">
+        </a>
     </div>
 
     <mat-card-content>

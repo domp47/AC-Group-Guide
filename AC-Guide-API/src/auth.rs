@@ -103,7 +103,6 @@ pub fn verify_firebase_jwt(jwt: &str) -> Result<Payload, String> {
         }
     }
 
-    assert_eq!(parts.len(), 3, "Unrecognized JWT Token");
     if parts.len() != 3 {
         return Err("Token Verification Error: token is not 3 parts.".to_string())
 
@@ -226,7 +225,7 @@ impl<'a, 'r> FromRequest<'a, 'r> for AcUser {
     fn from_request(request: &'a Request<'r>) -> request::Outcome<Self, Self::Error> {
         let db_outcome = request.guard::<crate::db::Connection>();
         if ! db_outcome.is_success() {
-            return Outcome::Failure((Status::FailedDependency, ApiKeyError::DbConnectionError))
+            return Outcome::Failure((Status::InternalServerError, ApiKeyError::DbConnectionError))
         }
         let db = db_outcome.unwrap();
 
@@ -248,11 +247,11 @@ impl<'a, 'r> FromRequest<'a, 'r> for AcUser {
                 }
                 Err(err) => {
                     println!("{}", err);
-                    return Outcome::Failure((Status::Forbidden, ApiKeyError::Denied))
+                    return Outcome::Failure((Status::Unauthorized, ApiKeyError::Denied))
                 }
             }
         }else{
-            return Outcome::Failure((Status::Forbidden, ApiKeyError::Denied))
+            return Outcome::Failure((Status::Unauthorized, ApiKeyError::Denied))
         }
     }
 }
