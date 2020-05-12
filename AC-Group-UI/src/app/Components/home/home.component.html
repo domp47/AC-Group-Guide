@@ -7,35 +7,35 @@
         <mat-expansion-panel *ngFor="let item of data" class="mt-2">
             <mat-expansion-panel-header>
                 <mat-panel-title>
-                    {{item.name}}
+                    {{item.displayName}}
                 </mat-panel-title>
             </mat-expansion-panel-header>
               
-            <mat-tab-group>
+            <mat-tab-group mat-stretch-tabs class="mt-2">
                 <mat-tab label="Art">
                     <mat-grid-list [cols]="nCols" gutterSize="1.5rem" rowHeight="250px" (window:resize)="onResize($event)">
-                        <mat-grid-tile *ngFor="let art of item.art">
-                            <app-missing-card class="app-card" [name]="art.name" [imgLocation]="art.imgLocation" [width]="art.width"></app-missing-card>
+                        <mat-grid-tile *ngFor="let art of item.missingArt">
+                            <app-missing-card class="app-card" [name]="art.name" [imgLocation]="art.imgLocation"></app-missing-card>
                         </mat-grid-tile>  
                     </mat-grid-list>
                 </mat-tab>
                 <mat-tab label="Bugs">
                     <mat-grid-list [cols]="nCols" gutterSize="1.5rem" rowHeight="200px" (window:resize)="onResize($event)">
-                        <mat-grid-tile *ngFor="let bug of item.bugs">
+                        <mat-grid-tile *ngFor="let bug of item.missingBugs">
                             <app-missing-card class="app-card" [name]="bug.name" [imgLocation]="bug.imgLocation"></app-missing-card>
                         </mat-grid-tile>  
                     </mat-grid-list>
                 </mat-tab>
                 <mat-tab label="Fish">
                     <mat-grid-list [cols]="nCols" gutterSize="1.5rem" rowHeight="200px" (window:resize)="onResize($event)">
-                        <mat-grid-tile *ngFor="let fish of item.fish">
+                        <mat-grid-tile *ngFor="let fish of item.missingFish">
                             <app-missing-card class="app-card" [name]="fish.name" [imgLocation]="fish.imgLocation"></app-missing-card>
                         </mat-grid-tile>  
                     </mat-grid-list>
                 </mat-tab>
                 <mat-tab label="Fossils">
                     <mat-grid-list [cols]="nCols" gutterSize="1.5rem" rowHeight="200px" (window:resize)="onResize($event)">
-                        <mat-grid-tile *ngFor="let fossil of item.fossils">
+                        <mat-grid-tile *ngFor="let fossil of item.missingFossils">
                             <app-missing-card class="app-card" [name]="fossil.name" [imgLocation]="fossil.imgLocation"></app-missing-card>
                         </mat-grid-tile>  
                     </mat-grid-list>

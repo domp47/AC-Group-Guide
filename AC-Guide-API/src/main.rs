@@ -26,6 +26,8 @@ use rocket_contrib::json::JsonValue;
 use rocket_contrib::json;
 use rocket::http::Status;
 use api_responder::ApiResponder;
+
+#[cfg(debug_assertions)]
 use dotenv;
 
 // region AcceptModels
