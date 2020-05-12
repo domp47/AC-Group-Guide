@@ -1,8 +1,8 @@
 FROM rustlang/rust:nightly as build
 
-COPY ./AC-Guide-API ./.
+COPY ./ ./AC-Guide-API/
 
-RUN cargo build --release
+RUN cargo build --manifest-path AC-Guide-API/Cargo.toml --release
 
 RUN mkdir -p /build-out
 
