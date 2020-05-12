@@ -69,36 +69,6 @@ impl AcUser {
         }
     }
 
-    pub fn get_admin_users_by_group(group_id: i32, connection: &PgConnection) -> Result<Vec<AcUser>, ApiResponder> {
-        let users = crate::schema::ac_users::dsl::ac_users
-            .filter(ac_users::group_id.eq(group_id).and(ac_users::role_id.ge(Roles::Admin as i32)))
-            .load(connection);
-
-        match users {
-            Ok(u) => {
-                return Ok(u)
-            }
-            Err(err) => {
-                return Err(ApiResponder {error: Status::InternalServerError, message: err.to_string()})
-            }
-        }
-    }
-
-    pub fn get_regular_users_by_group(group_id: i32, connection: &PgConnection) -> Result<Vec<AcUser>, ApiResponder> {
-        let users = crate::schema::ac_users::dsl::ac_users
-            .filter(ac_users::group_id.eq(group_id).and(ac_users::role_id.eq(Roles::User as i32)))
-            .load(connection);
-
-        match users {
-            Ok(u) => {
-                return Ok(u)
-            }
-            Err(err) => {
-                return Err(ApiResponder {error: Status::InternalServerError, message: err.to_string()})
-            }
-        }
-    }
-
     pub fn get_users_by_group(group_id: i32, connection: &PgConnection) -> Result<Vec<AcUser>, ApiResponder> {
         let users = crate::schema::ac_users::dsl::ac_users
             .filter(ac_users::group_id.eq(group_id))

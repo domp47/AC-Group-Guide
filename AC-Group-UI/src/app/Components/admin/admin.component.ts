@@ -25,12 +25,12 @@ export class AdminComponent implements OnInit {
   faPlus = faPlus;
   faTransfer = faRandom;
 
-  displayedColumns: String[] = ["Name", "Actions"];
+  roles = ["User", "Administrator", "Owner"];
+  displayedColumns: String[] = ["Name", "Role", "Actions"];
   user: User;
   joinCode: String;
   groupName: String;
   users: User[];
-  admins: User[];
 
   ngOnInit(): void {
     this.userService.getUser().pipe(
@@ -46,7 +46,6 @@ export class AdminComponent implements OnInit {
       this.joinCode = data.joinCode;
       this.groupName = data.groupName;
       this.users = data.users;
-      this.admins = data.admins;
     },
     (err: HttpErrorResponse) => {
       this.handleError(err);
@@ -66,7 +65,7 @@ export class AdminComponent implements OnInit {
 
   regenerateCode(){
     this.adminService.regenerateCode().subscribe(() => {
-      this.ngOnInit
+      this.ngOnInit();
     },
     (err: HttpErrorResponse) => {
       this.handleError(err);

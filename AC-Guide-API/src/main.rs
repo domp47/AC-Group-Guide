@@ -138,7 +138,6 @@ struct HomeResponse {
 #[serde(rename_all = "camelCase")]
 struct AdminResponse {
     users: Vec<ac_user::AcUser>,
-    admins: Vec<ac_user::AcUser>,
 
     join_code: String,
     group_name: String
@@ -465,8 +464,7 @@ fn get_admin_data(connection: db::Connection, user: ac_user::AcUser) -> Result<J
     let group = group::Group::get_group_by_id(user.group_id.unwrap(), &connection)?;
 
     let response = AdminResponse {
-        users: ac_user::AcUser::get_regular_users_by_group(user.group_id.unwrap(), &connection)?,
-        admins: ac_user::AcUser::get_admin_users_by_group(user.group_id.unwrap(), &connection)?,
+        users: ac_user::AcUser::get_users_by_group(user.group_id.unwrap(), &connection)?,
 
         join_code: group.join_code,
         group_name: group.name
@@ -551,7 +549,7 @@ fn main() {
 
     let cors_res: Result<rocket_cors::Cors, rocket_cors::Error> = rocket_cors::CorsOptions {
         allowed_origins,
-        allowed_methods: vec![rocket::http::Method::Get, rocket::http::Method::Put, rocket::http::Method::Post, rocket::http::Method::Delete]
+        allowed_methods: vec![rocket::http::Method::Get, rocket::http::Method::Put, rocket::http::Method::Post, rocket::http::Method::Delete, rocket::http::Method::Patch]
             .into_iter()
             .map(From::from)
             .collect(),

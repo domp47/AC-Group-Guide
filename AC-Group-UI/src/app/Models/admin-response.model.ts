@@ -5,5 +5,4 @@ export class AdminResponse{
     groupName: String;
 
     users: User[];
-    admins: User[];
 }

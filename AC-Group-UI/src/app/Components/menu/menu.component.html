@@ -7,6 +7,6 @@
   <a *ngIf="isAuthenticated" mat-button [routerLink]="['/groups']">Groups</a>
   <a *ngIf="isAuthenticated" mat-button [routerLink]="['/admin']">Administration</a>
 
-  <a *ngIf="!isAuthenticated" mat-button [routerLink]="['login']">Login</a>
+  <a *ngIf="!isAuthenticated" mat-button (click)="login()">Login</a>
   <a *ngIf="isAuthenticated" mat-button (click)="logout()">Logout</a>
 </mat-toolbar>
