@@ -6,7 +6,7 @@ RUN cargo build --manifest-path AC-Guide-API/Cargo.toml --release
 
 RUN mkdir -p /build-out
 
-RUN cp target/release/ac_guide_api /build-out
+RUN cp ./AC-Guide-API/target/release/ac_guide_api /build-out
 
 FROM ubuntu:bionic
 
