@@ -36,6 +36,17 @@ export class HomeComponent implements OnInit {
     return 8;
   }
 
+  handleError(err: HttpErrorResponse) {
+    let msg = err.error?.message;
+    if(msg == null) {
+      msg = err.statusText;
+    }
+
+    this._snackBar.open(msg, null, {
+      duration: 3000
+    });
+  }
+
   getData(){
     this.service.getGroupData().subscribe(data => {
       this.noGroup = false;
@@ -48,9 +59,7 @@ export class HomeComponent implements OnInit {
         return;
       }
 
-      this._snackBar.open(err.statusText, null, {
-        duration: 3000
-      });
+      this.handleError(err);
     });
   }
 

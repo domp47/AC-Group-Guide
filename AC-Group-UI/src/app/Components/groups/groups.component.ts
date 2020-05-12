@@ -39,6 +39,17 @@ export class GroupsComponent implements OnInit {
     });
   }
 
+  handleError(err: HttpErrorResponse) {
+    let msg = err.error?.message;
+    if(msg == null) {
+      msg = err.statusText;
+    }
+
+    this._snackBar.open(msg, null, {
+      duration: 3000
+    });
+  }
+
   createGroup(){
     if (this.field_newName == null || this.field_newName == ""){
       return
@@ -47,14 +58,7 @@ export class GroupsComponent implements OnInit {
       this.router.navigate(['admin']);
     },
     (err: HttpErrorResponse) => {
-      let msg = err.error?.message;
-      if(msg == null) {
-        msg = err.statusText;
-      }
-
-      this._snackBar.open(msg, null, {
-        duration: 3000
-      });
+      this.handleError(err);
     });
   }
 
@@ -66,14 +70,7 @@ export class GroupsComponent implements OnInit {
       this.router.navigate(['home']);
     },
     (err: HttpErrorResponse) => {
-      let msg = err.error?.message;
-      if(msg == null) {
-        msg = err.statusText;
-      }
-
-      this._snackBar.open(msg, null, {
-        duration: 3000
-      });
+      this.handleError(err);
     });
   }
 
@@ -82,14 +79,7 @@ export class GroupsComponent implements OnInit {
       this.ngOnInit();
     },
     (err: HttpErrorResponse) => {
-      let msg = err.error?.message;
-      if(msg == null) {
-        msg = err.statusText;
-      }
-
-      this._snackBar.open(msg, null, {
-        duration: 3000
-      });
+      this.handleError(err);
     });
   }
 

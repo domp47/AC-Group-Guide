@@ -35,8 +35,15 @@ export class TrackingComponent implements OnInit {
     this.getData();
   }
   
-  handleError(err) {
-    console.log(err);
+  handleError(err: HttpErrorResponse) {
+    let msg = err.error?.message;
+    if(msg == null) {
+      msg = err.statusText;
+    }
+
+    this._snackBar.open(msg, null, {
+      duration: 3000
+    });
   }
 
   getData(){
@@ -44,14 +51,7 @@ export class TrackingComponent implements OnInit {
       this.data = data;
     },
     (err: HttpErrorResponse) => {
-      let msg = err.error?.message;
-      if(msg == null) {
-        msg = err.statusText;
-      }
-
-      this._snackBar.open(err.statusText, null, {
-        duration: 3000
-      });
+      this.handleError(err);
     });
   }
 
@@ -60,9 +60,7 @@ export class TrackingComponent implements OnInit {
       this.getData();
     },
     (err: HttpErrorResponse) => {
-      this._snackBar.open(err.statusText, null, {
-        duration: 3000
-      });
+      this.handleError(err);
     });
   }
 
@@ -71,9 +69,7 @@ export class TrackingComponent implements OnInit {
       this.getData();
     },
     (err: HttpErrorResponse) => {
-      this._snackBar.open(err.statusText, null, {
-        duration: 3000
-      });
+      this.handleError(err);
     });
   }
 

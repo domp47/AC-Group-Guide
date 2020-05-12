@@ -10,6 +10,7 @@ use crate::api_responder::ApiResponder;
 use rocket::http::Status;
 
 #[derive(Serialize, Deserialize, Queryable, Insertable, Identifiable, AsChangeset)]
+#[changeset_options(treat_none_as_null = "true")]
 #[serde(rename_all = "camelCase")]
 #[primary_key(google_id)]
 pub struct AcUser {

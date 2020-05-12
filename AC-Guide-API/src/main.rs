@@ -138,7 +138,8 @@ struct AdminResponse {
     users: Vec<ac_user::AcUser>,
     admins: Vec<ac_user::AcUser>,
 
-    join_code: String
+    join_code: String,
+    group_name: String
 }
 
 // endregion
@@ -465,7 +466,8 @@ fn get_admin_data(connection: db::Connection, user: ac_user::AcUser) -> Result<J
         users: ac_user::AcUser::get_regular_users_by_group(user.group_id.unwrap(), &connection)?,
         admins: ac_user::AcUser::get_admin_users_by_group(user.group_id.unwrap(), &connection)?,
 
-        join_code: group.join_code
+        join_code: group.join_code,
+        group_name: group.name
     };
 
     Ok(Json(json!(response)))
