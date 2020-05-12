@@ -1,6 +1,6 @@
 FROM rustlang/rust:nightly as build
 
-COPY ./AC-Guide-API ./AC-Guide-API
+COPY ./AC-Guide-API ./.
 
 RUN cargo build --release
 
