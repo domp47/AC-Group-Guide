@@ -1,0 +1,2 @@
+[production]
+tls = { certs = "/etc/certs/cert.pem", key = "/etc/certs/privkey.pem" }
