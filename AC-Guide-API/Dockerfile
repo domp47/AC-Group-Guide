@@ -10,7 +10,7 @@ RUN cp ./AC-Guide-API/target/release/ac_guide_api /build-out
 
 FROM ubuntu:bionic
 
-RUN apt-get update && apt-get -y install libpq-dev libssl-dev && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get -y install libpq-dev libssl-dev ca-certificates && rm -rf /var/lib/apt/lists/*
 
 COPY --from=build /build-out/ac_guide_api /
 
