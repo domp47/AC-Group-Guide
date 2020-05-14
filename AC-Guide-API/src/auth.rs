@@ -140,7 +140,8 @@ pub fn verify_firebase_jwt(jwt: &str) -> Result<Payload, String> {
 
     let req_resp = reqwest::blocking::get("https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com");
     if req_resp.is_err() {
-        return Err("Token Verification Error: Could not get Google's Public Keys.".to_string())
+        let err_msg = format!("Token Verification Error: Could not get Google's Public Keys. Request Response: {}", req_resp.unwrap_err());
+        return Err(err_msg)
 
     }
     let pub_keys_res = req_resp.unwrap().json::<HashMap<String, String>>();
