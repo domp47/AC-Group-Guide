@@ -1,6 +1,6 @@
 # Animal Crossing Group Catch
 
-[![Build status](https://dev.azure.com/DomenicPerriccioli/ACPipelines/_apis/build/status/ACPipelines-CI)](https://dev.azure.com/DomenicPerriccioli/ACPipelines/_build/latest?definitionId=7)
+![Build status](https://dev.azure.com/DomenicPerriccioli/ACPipelines/_apis/build/status/ACPipelines-Docker-CI)
 
 ## Background
 This idea is largely based off of *Sawyer Hood*'s [Animal Crossing Catch](https://github.com/SawyerHood/animal-crossing-catch).
