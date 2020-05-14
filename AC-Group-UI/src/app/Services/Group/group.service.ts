@@ -1,25 +1,45 @@
-import { AngularFirestore } from '@angular/fire/firestore';
 import { Injectable } from '@angular/core';
-import { AngularFireFunctions } from '@angular/fire/functions';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Group } from 'src/app/Models/group.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class GroupService {
-  constructor(public fns: AngularFireFunctions, public db: AngularFirestore) {}
 
-  async createGroup(groupName = 'ThisIsAGroupName') {
-    const _createGroup = this.fns.httpsCallable('createGroup');
-    const response = await _createGroup({ groupName }).toPromise();
-    console.log(response);
-    return response;
+  base: string = "/groups";
+
+  constructor(private http: HttpClient) {}
+
+  join(code: String): Observable<any> {
+    const obj = {};
+    obj["code"] = code;
+
+    return this.http.post(`${this.base}/join`, obj).pipe(
+      map(data => data)
+    );
   }
 
-  async joinGroup(joinCode: string) {
-    console.log(joinCode);
-    const _joinGroup = this.fns.httpsCallable('joinGroup');
-    const response = await _joinGroup({ joinCode }).toPromise();
-    console.log(response);
-    return response;
+  create(name: String): Observable<Group> {
+    const obj = {};
+    obj["name"] = name;
+
+    return this.http.post<Group>(`${this.base}/create`, obj).pipe(
+      map(data => data)
+    );
+  }
+
+  leave(): Observable<any> {
+    return this.http.delete(`${this.base}`).pipe(
+      map(data => data)
+    );
+  }
+
+  get(): Observable<Group> {
+    return this.http.get<Group>(`${this.base}`).pipe(
+      map(data => data)
+    );
   }
 }

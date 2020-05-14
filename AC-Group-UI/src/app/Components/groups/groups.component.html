@@ -1,5 +1,35 @@
-<p>groups works!</p>
-<div *ngIf="authService.group$ | async as group">Join code: {{ group.joinCode }}</div>
+<div *ngIf="group">
+  <div class="join-form mt-5">
+    <h2 class="mat-h2">You are a part of {{group.name}}.<br>Join Code: {{group.joinCode}}</h2>
+    <button mat-raised-button color="warn" (click)="leaveGroupConfirm()">
+      Leave Group
+    </button>
+  </div>
+</div>
+<div *ngIf="noGroup">
+  <div class="join-form mt-5">
+    <h2 class="mat-h2">You are not part of a group. Either join an existing group or create a new group.</h2>
+    
+    <mat-form-field>
+      <mat-label>Group Name</mat-label>
+      <input matInput [(ngModel)]="field_newName" />
+    </mat-form-field>
+    <button class="ml-2" mat-raised-button color="primary" (click)="createGroup()">
+      Create
+    </button>
+    
+    <br>
+
+    <mat-form-field>
+      <mat-label>Join Code</mat-label>
+      <input matInput placeholder="XXXXXXXXXX" type="text" [(ngModel)]="field_joinCode" />
+    </mat-form-field>
+    <button class="ml-2" mat-raised-button color="primary" (click)="joinGroup()">
+      Join
+    </button>
+  </div>
+</div>
+<!-- <div *ngIf="authService.group$ | async as group">Join code: {{ group.joinCode }}</div>
 <div *ngIf="authService.members$ | async as members">
   Members exist...
   <ol>
@@ -22,4 +52,4 @@
   <button mat-raised-button color="primary" (click)="groupService.joinGroup(joinCode.value)">
     Join
   </button>
-</div>
+</div> -->

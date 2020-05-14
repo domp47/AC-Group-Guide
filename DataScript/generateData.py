@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup as BS
 from urllib.parse import urlparse
+from PIL import Image
 import requests
 import pathlib
 import os
@@ -318,23 +319,34 @@ print("Parsed Fossils")
 class Art:
     def __init__(self, data, isPainting):
         self.name = data[0][0]
-        self.imgLocation = os.path.join(artPath, self.name)
         self.originalPiece = data[1]
         self.artist = data[2]
         self.price = data[3]
         self.value = data[4]
-        self.isPainting = isPainting
         self.width = data[0][2]
 
         imgName = self.name
+        fullSize = self.name
+
         if isPainting:
             imgName += ".jpg"
-            self.imgLocation += ".jpg"
+            fullSize += ".fullsize.jpg"
+
+            self.imgLocationAlt = os.path.join(artPath, fullSize)
+            downloadLocation = os.path.join(basePath, "Results", artPath, fullSize)
+            downloadImage(data[0][1], downloadLocation)
+
+            self.imgLocation = os.path.join(artPath, imgName)
+            image = Image.open(downloadLocation)
+            image.thumbnail((150, 160))
+            image.save(os.path.join(basePath, "Results", artPath, imgName))
         else:
             imgName += ".png"
-            self.imgLocation += ".png"
+            fullSize += ".png"
 
-        downloadImage(data[0][1], os.path.join(basePath, "Results", artPath, imgName))
+            self.imgLocation = os.path.join(artPath, imgName)
+            downloadLocation = os.path.join(basePath, "Results", artPath, imgName)
+            downloadImage(data[0][1], downloadLocation)
 
 def parseArtTable(table):
     table_body = table.find('tbody')

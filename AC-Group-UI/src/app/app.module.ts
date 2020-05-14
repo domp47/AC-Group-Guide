@@ -64,6 +64,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { MissingCardComponent } from './Components/missing-card/missing-card.component';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { HttpClientInterceptor } from './Interceptors/http-client.interceptor';
+import { AuthService } from './Services/auth.service';
+import { ConfirmationDialogComponent } from './Components/confirmation-dialog/confirmation-dialog.component';
 
 @NgModule({
   exports: [],
@@ -80,11 +84,13 @@ import { MissingCardComponent } from './Components/missing-card/missing-card.com
     BugCardComponent,
     FossilCardComponent,
     MissingCardComponent,
+    ConfirmationDialogComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    HttpClientModule,
 
     // Firebase Modules
     AngularFireModule.initializeApp(environment.firebase),
@@ -133,7 +139,18 @@ import { MissingCardComponent } from './Components/missing-card/missing-card.com
     MatTooltipModule,
     MatTreeModule,
   ],
-  providers: [AngularFireAuthGuard],
-  bootstrap: [AppComponent],
+  entryComponents: [
+    ConfirmationDialogComponent
+  ],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpClientInterceptor,
+      multi: true,
+      deps: [ AuthService ]
+    },
+    AngularFireAuthGuard
+  ],
+  bootstrap: [AppComponent]
 })
 export class AppModule {}

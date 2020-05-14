@@ -8,7 +8,6 @@ import { Component, OnInit, Input } from '@angular/core';
 export class MissingCardComponent implements OnInit {
   @Input() name: string;
   @Input() imgLocation: string;
-  @Input() width: number = null;
 
   constructor() {}
 

@@ -1,12 +1,11 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
-import { AngularFirestore } from '@angular/fire/firestore';
-import { AuthService } from 'src/app/Services/auth.service';
-
-import { User } from 'src/app/Models/user.model';
-import { first } from 'rxjs/operators';
-import { ItemsService } from './../../Services/Items/items.service';
-import { Items } from './../../Models/items.model';
+import { map, catchError } from 'rxjs/operators';
+import { TrackingResponse } from 'src/app/Models/tracking-response.model';
+import { TrackingService } from 'src/app/Services/Tracking/tracking.service';
+import { Observable } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-tracking',
@@ -22,30 +21,10 @@ export class TrackingComponent implements OnInit {
    */
   filter = 0;
 
-  artCollected = [];
-  artMissing = [];
-
-  fossilCollected = [];
-  fossilMissing = [];
-
-  bugsAvail = [];
-  bugsAvailThisMonth = [];
-  bugsNotAvail = [];
-  bugsCaught = [];
-
-  fishAvail = [];
-  fishAvailThisMonth = [];
-  fishNotAvail = [];
-  fishCaught = [];
-
+  data: TrackingResponse;
   hemisphere: boolean = true;
 
-  constructor(
-    private db: AngularFirestore,
-    private authService: AuthService,
-    public itemsService: ItemsService,
-    private cdr: ChangeDetectorRef
-  ) {}
+  constructor(private service: TrackingService, private _snackBar: MatSnackBar, private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
     this.getData();
@@ -55,117 +34,51 @@ export class TrackingComponent implements OnInit {
     this.hemisphere = !this.hemisphere;
     this.getData();
   }
+  
+  handleError(err: HttpErrorResponse) {
+    let msg = err.error?.message;
+    if(msg == null) {
+      msg = err.statusText;
+    }
 
-  getData() {
-    console.log('Gets here...');
-    this.authService.user$.pipe().subscribe((user) => {
-      this.itemsService.items$.pipe().subscribe((items) => {
-        this.updateData(user, items);
-      });
+    this._snackBar.open(msg, null, {
+      duration: 3000
     });
   }
 
-  updateData(user: User, items: Items) {
-    const start = performance.now();
-    const { Art: artData, Bugs: bugsData, Fish: fishData, Fossils: fossilsData } = items;
-    console.log(items);
-    const itemsCaught: string[] = user.itemsCaught ? user.itemsCaught : [];
-
-    // I hate this but ok.
-    let mBit = 1 << (11 - new Date().getMonth());
-    let hBit = 1 << (23 - new Date().getHours() - 1);
-
-    this.artCollected = [];
-    this.artMissing = [];
-
-    for (let art of artData) {
-      if (itemsCaught.indexOf(art.name) == -1) {
-        this.artMissing.push(art);
-      } else {
-        this.artCollected.push(art);
-      }
-    }
-
-    this.bugsAvail = [];
-    this.bugsAvailThisMonth = [];
-    this.bugsNotAvail = [];
-    this.bugsCaught = [];
-
-    for (let bug of bugsData) {
-      if (itemsCaught.indexOf(bug.name) == -1) {
-        if ((this.hemisphere && (bug.northMonths & mBit) != 0) || (!this.hemisphere && (bug.southMonths & mBit) != 0)) {
-          if ((bug.timeMask & hBit) != 0) {
-            this.bugsAvail.push(bug);
-          } else {
-            this.bugsAvailThisMonth.push(bug);
-          }
-        } else {
-          this.bugsNotAvail.push(bug);
-        }
-      } else {
-        this.bugsCaught.push(bug);
-      }
-    }
-
-    this.fishAvail = [];
-    this.fishAvailThisMonth = [];
-    this.fishNotAvail = [];
-    this.fishCaught = [];
-
-    for (let fish of fishData) {
-      if (itemsCaught.indexOf(fish.name) == -1) {
-        if (
-          (this.hemisphere && (fish.northMonths & mBit) != 0) ||
-          (!this.hemisphere && (fish.southMonths & mBit) != 0)
-        ) {
-          if ((fish.timeMask & hBit) != 0) {
-            this.fishAvail.push(fish);
-          } else {
-            this.fishAvailThisMonth.push(fish);
-          }
-        } else {
-          this.fishNotAvail.push(fish);
-        }
-      } else {
-        this.fishCaught.push(fish);
-      }
-    }
-
-    this.fossilCollected = [];
-    this.fossilMissing = [];
-
-    for (let fossil of fossilsData) {
-      if (itemsCaught.indexOf(fossil.name) == -1) {
-        this.fossilMissing.push(fossil);
-      } else {
-        this.fossilCollected.push(fossil);
-      }
-    }
+  getData(){
+    this.service.getTracking(this.hemisphere).subscribe((data: TrackingResponse) => {
+      this.data = data;
+    },
+    (err: HttpErrorResponse) => {
+      this.handleError(err);
+    });
   }
 
-  catchItem(event) {
-    let name = event.name;
-    let add = event.add;
-
-    this.authService.user$.pipe(first()).subscribe((user: User) => {
-      const itemsCaught = user.itemsCaught ? user.itemsCaught : [];
-
-      if (add) {
-        itemsCaught.push(name);
-      } else {
-        let indx = itemsCaught.indexOf(name);
-        if (indx > -1) {
-          itemsCaught.splice(indx, 1);
-        }
-      }
-
-      this.db.collection<User>('users').doc(user.uid).set(
-        {
-          itemsCaught,
-        },
-        { merge: true }
-      );
+  uncatchItem(id: number) {
+    this.service.uncatchItem(id).subscribe(_ => {
+      this.getData();
+    },
+    (err: HttpErrorResponse) => {
+      this.handleError(err);
     });
+  }
+
+  catchItem(id: number){
+    this.service.catchItem(id).subscribe(_ => {
+      this.getData();
+    },
+    (err: HttpErrorResponse) => {
+      this.handleError(err);
+    });
+  }
+
+  handleItemClick(event: any) {
+    if(event.add) {
+      this.catchItem(event.id);
+    }else{
+      this.uncatchItem(event.id);
+    }
   }
 
   filterChange(event: MatButtonToggleChange) {
