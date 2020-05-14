@@ -1,0 +1,276 @@
+1, Academic Painting
+2, Amazing Painting
+3, Basic Painting
+4, Calm Painting
+5, Common Painting
+6, Detailed Painting
+7, Dynamic Painting
+8, Famous Painting
+9, Flowery Painting
+10, Glowing Painting
+11, Graceful Painting
+12, Jolly Painting
+13, Moody Painting
+14, Moving Painting
+15, Mysterious Painting
+16, Nice Painting
+17, Perfect Painting
+18, Proper Painting
+19, Quaint Painting
+20, Scary Painting
+21, Scenic Painting
+22, Serene Painting
+23, Sinking Painting
+24, Solemn Painting
+25, Twinkling Painting
+26, Warm Painting
+27, Wild Painting Left Half
+28, Wild Painting Right Half
+29, Wistful Painting
+30, Worthy Painting
+31, Ancient Statue
+32, Beautiful Statue
+33, Familiar Statue
+34, Gallant Statue
+35, Great Statue
+36, Informative Statue
+37, Motherly Statue
+38, Mystic Statue
+39, Robust Statue
+40, Rock-head Statue
+41, Tremendous Statue
+42, Valiant Statue
+43, Warrior Statue
+44, Common butterfly
+45, Yellow butterfly
+46, Tiger butterfly
+47, Peacock butterfly
+48, Common bluebottle
+49, Paper kite butterfly
+50, Great purple emperor
+51, Monarch butterfly
+52, Emperor butterfly
+53, Agrias butterfly
+54, Rajah Brooke's birdwing
+55, Queen Alexandra's birdwing
+56, Moth
+57, Atlas moth
+58, Madagascan sunset moth
+59, Long locust
+60, Migratory locust
+61, Rice grasshopper
+62, Grasshopper
+63, Cricket
+64, Bell cricket
+65, Mantis
+66, Orchid mantis
+67, Honeybee
+68, Wasp
+69, Brown cicada
+70, Robust cicada
+71, Giant cicada
+72, Walker cicada
+73, Evening cicada
+74, Cicada shell
+75, Red dragonfly
+76, Darner dragonfly
+77, Banded dragonfly
+78, Damselfly
+79, Firefly
+80, Mole cricket
+81, Pondskater
+82, Diving beetle
+83, Giant water bug
+84, Stinkbug
+85, Man-faced stink bug
+86, Ladybug
+87, Tiger beetle
+88, Jewel beetle
+89, Violin beetle
+90, Citrus long-horned beetle
+91, Rosalia batesi beetle
+92, Blue weevil beetle
+93, Dung beetle
+94, Earth-boring dung beetle
+95, Scarab beetle
+96, Drone beetle
+97, Goliath beetle
+98, Saw stag
+209, Australopith
+99, Miyama stag
+100, Giant stag
+101, Rainbow stag
+102, Cyclommatus stag
+103, Golden stag
+104, Giraffe stag
+105, Horned dynastid
+106, Horned atlas
+107, Horned elephant
+108, Horned hercules
+109, Walking stick
+110, Walking leaf
+111, Bagworm
+112, Ant
+113, Hermit crab
+114, Wharf roach
+115, Fly
+116, Mosquito
+117, Flea
+118, Snail
+119, Pill bug
+120, Centipede
+121, Spider
+122, Tarantula
+123, Scorpion
+124, Bitterling
+125, Pale chub
+126, Crucian carp
+127, Dace
+128, Carp
+129, Koi
+130, Goldfish
+131, Pop-eyed goldfish
+132, Ranchu goldfish
+133, Killifish
+134, Crawfish
+135, Soft-shelled turtle
+136, Snapping Turtle
+137, Tadpole
+138, Frog
+139, Freshwater goby
+140, Loach
+141, Catfish
+142, Giant snakehead
+143, Bluegill
+144, Yellow perch
+145, Black bass
+146, Tilapia
+147, Pike
+148, Pond smelt
+149, Sweetfish
+150, Cherry salmon
+151, Char
+210, Coprolite
+152, Golden trout
+153, Stringfish
+154, Salmon
+155, King salmon
+156, Mitten crab
+157, Guppy
+158, Nibble fish
+159, Angelfish
+160, Betta
+161, Neon tetra
+162, Rainbowfish
+163, Piranha
+164, Arowana
+165, Dorado
+166, Gar
+167, Arapaima
+168, Saddled bichir
+169, Sturgeon
+170, Sea butterfly
+171, Sea horse
+172, Clown fish
+173, Surgeonfish
+174, Butterfly fish
+175, Napoleonfish
+176, Zebra turkeyfish
+177, Blowfish
+178, Puffer fish
+179, Anchovy
+180, Horse mackerel
+181, Barred knifejaw
+182, Sea bass
+183, Red snapper
+184, Dab
+185, Olive flounder
+186, Squid
+187, Moray eel
+188, Ribbon eel
+189, Tuna
+190, Blue marlin
+191, Giant trevally
+192, Mahi-mahi
+193, Ocean sunfish
+194, Ray
+195, Saw shark
+196, Hammerhead shark
+197, Great white shark
+198, Whale shark
+199, Suckerfish
+200, Football fish
+201, Oarfish
+202, Barreleye
+203, Coelacanth
+204, Acanthostega
+205, Amber
+206, Ammonite
+207, Anomalocaris
+208, Archaeopteryx
+211, Dinosaur track
+212, Dunkleosteus
+213, Eusthenopteron
+214, Juramaia
+215, Myllokunmingia
+216, Shark-tooth pattern
+217, Trilobite
+218, Ankylo skull
+219, Ankylo torso
+220, Ankylo tail
+221, Archelon skull
+222, Archelon tail
+223, Brachio skull
+224, Brachio chest
+225, Brachio pelvis
+226, Brachio tail
+227, Deinony torso
+228, Deinony tail
+229, Dimetrodon skull
+230, Dimetrodon torso
+231, Diplo skull
+232, Diplo neck
+233, Diplo chest
+234, Diplo pelvis
+235, Diplo tail
+236, Diplo tail tip
+237, Iguanodon skull
+238, Iguanodon torso
+239, Iguanodon tail
+240, Mammoth skull
+241, Mammoth torso
+242, Megacero skull
+243, Megacero torso
+244, Megacero tail
+245, Left megalo side
+246, Right megalo side
+247, Ophthalmo skull
+248, Ophthalmo torso
+249, Pachysaurus skull
+250, Pachysaurus tail
+251, Parasaur skull
+252, Parasaur torso
+253, Parasaur tail
+254, Plesio skull
+255, Plesio tail
+256, Plesio body
+257, Right ptera wing
+258, Ptera body
+259, Left ptera wing
+260, Right quetzal wing
+261, Quetzal torso
+262, Left quetzal wing
+263, Sabertooth skull
+264, Sabertooth tail
+265, Spino skull
+266, Spino torso
+267, Spino tail
+268, Stego skull
+269, Stego torso
+270, Stego tail
+271, Tricera skull
+272, Tricera torso
+273, Tricera tail
+274, T. rex skull
+275, T. rex torso
+276, T. rex tail
