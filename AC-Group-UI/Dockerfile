@@ -1,10 +1,9 @@
 # build stage
 FROM node:lts-alpine as build-stage
-ARG ENV_NAME=dev
 
 COPY . /app
 WORKDIR /app
-RUN npm install && npm run build$ENV_NAME
+RUN npm install && npm run buildprod
 
 # production stage
 FROM nginx:stable-alpine as production-stage
