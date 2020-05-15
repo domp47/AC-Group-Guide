@@ -16,8 +16,8 @@ export class TrackingService {
   getTracking(hemisphere: boolean): Observable<TrackingResponse> {
 
     const obj = {};
-    obj["month"] = 11-new Date().getMonth();
-    obj["hour"] = 23-new Date().getHours()-1;
+    obj["month"] = new Date().getMonth();
+    obj["hour"] = new Date().getHours();
     obj["hemisphere"] = hemisphere;
 
     return this.http.post<TrackingResponse>(`${this.base}/get`, obj).pipe(

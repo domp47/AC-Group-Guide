@@ -19,8 +19,7 @@ export class TrackingComponent implements OnInit {
    * 2 = Fish
    * 3 = Fossils
    */
-  filter = 0;
-
+  tabIndex: number;
   data: TrackingResponse;
   hemisphere: boolean = true;
 
@@ -28,10 +27,31 @@ export class TrackingComponent implements OnInit {
 
   ngOnInit(): void {
     this.getData();
+    
+    var indx = localStorage.getItem("tabIndex");
+    if( indx == null)
+      indx = "0";
+
+    var hemisphere = localStorage.getItem("isNorthHemi");
+    if( hemisphere == null )
+      hemisphere = "true";
+
+    this.tabIndex = +indx;
+    this.hemisphere = JSON.parse(hemisphere);
+  }
+
+  setTabIndex(newIndex) {
+    console.log("yeet");
+    console.log(newIndex);
+    
+    
+    this.tabIndex = newIndex;
+    localStorage.setItem("tabIndex", newIndex.toString());
   }
 
   toggleHemisphere() {
     this.hemisphere = !this.hemisphere;
+    localStorage.setItem("isNorthHemi", String(this.hemisphere));
     this.getData();
   }
   
@@ -79,12 +99,5 @@ export class TrackingComponent implements OnInit {
     }else{
       this.uncatchItem(event.id);
     }
-  }
-
-  filterChange(event: MatButtonToggleChange) {
-    this.filter = event.value;
-    // I do not know what's wrong with the change detector, but it takes 4 seconds to see the change without this.
-    // TODO: figure out what is happening
-    this.cdr.detectChanges();
   }
 }

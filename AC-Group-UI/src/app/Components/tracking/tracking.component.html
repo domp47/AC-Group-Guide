@@ -10,7 +10,7 @@
     />
 </div>
   
-<mat-tab-group mat-stretch-tabs class="tab-group">
+<mat-tab-group *ngIf="data" [selectedIndex]="tabIndex" (selectedIndexChange)="setTabIndex($event)" mat-stretch-tabs class="tab-group">
     <mat-tab label="Art">
         <h1>Not Obtained</h1>
         <div class="items-grid">
