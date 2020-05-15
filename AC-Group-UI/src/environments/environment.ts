@@ -7,7 +7,7 @@ import { FirebaseEnvironment } from './environment.firebase';
 export const environment = {
   production: false, 
   firebase: FirebaseEnvironment,
-  ApiBaseURL: "https://localhost:8000"
+  ApiBaseURL: "http://localhost:8000"
 };
 
 /*

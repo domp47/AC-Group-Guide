@@ -233,7 +233,7 @@ fn get_tracking(info: Json<GetTracking>, connection: db::Connection, user: ac_us
         return Err(ApiResponder { error: Status::BadRequest, message: "Error: Invalid Hour. Must be between 0-23".to_string() })
     }
 
-    let m_mask = 1 << (12 - month);
+    let m_mask = 1 << (11 - month);
     let h_mask = 1 << (23 - hour);
 
     let resp = TrackingResponse {
